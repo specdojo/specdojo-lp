@@ -41,33 +41,107 @@ const registerTypes = [
   },
 ];
 
-const steps = [
+const orchestratorGuideUrl = `${docsBase}specdojo/guides/orchestrator-operation-guide.html`;
+
+// 「始める」の会話例は specdojo の README「会話で操作する」に合わせる。
+type DialogLine = {
+  speaker: "you" | "orchestrator";
+  text: string;
+  code?: string[];
+};
+
+type ConversationStep = {
+  title: string;
+  body: string;
+  code?: string[];
+  dialog?: DialogLine[];
+  providers?: boolean;
+};
+
+type CommandStep = {
+  title: string;
+  body: string;
+  code?: string[];
+};
+
+const installCode = [
+  "mkdir app1-specdojo",
+  "git -C app1-specdojo init",
+  "cd app1-specdojo",
+  "npm init -y",
+  "npm install --save-dev specdojo",
+  "npx specdojo config init",
+];
+
+const installStep = {
+  title: "SpecDojo を導入する",
+  body: "プロジェクト用のリポジトリを作り、SpecDojo を開発用の依存として入れます。config init は、register だけを使う最小の設定（プロジェクト ID は prj-0001）を .specdojo/specdojo.config.json に作ります。",
+  code: installCode,
+};
+
+const conversationSteps: ConversationStep[] = [
+  installStep,
   {
-    title: "SpecDojo を導入する",
-    body: "プロジェクト用のリポジトリを作り、SpecDojo を開発用の依存として入れます。",
-    code: [
-      "mkdir app1-specdojo",
-      "git -C app1-specdojo init",
-      "cd app1-specdojo",
-      "npm init -y",
-      "npm install --save-dev specdojo",
+    title: "オーケストレーターを配置する",
+    body: "SpecDojo には、会話を CLI の操作に置き換えてくれる対話型オーケストレーターが入っています。使う AI ツール（provider）の設定を配置します。次は Claude Code の例です。package.json に起動用の script が追加されます。",
+    code: ["npx specdojo config scaffold --provider claude"],
+  },
+  {
+    title: "オーケストレーターを起動する",
+    body: "追加された script で起動します。ほかの provider を使う場合は、config scaffold の --provider を変えて配置し、次の script で起動します。",
+    code: ["npm run orch:opus"],
+    providers: true,
+  },
+  {
+    title: "最初の作業を起票する",
+    body: "やりたいことを、そのまま伝えます。オーケストレーターがコマンドに置き換え、実行する前に内容を見せて確認を求めます。",
+    dialog: [
+      {
+        speaker: "you",
+        text: "このプロジェクトを始めたい。まず登録簿を用意して、最初の作業を todo として起票して。",
+      },
+      {
+        speaker: "orchestrator",
+        text: "次を実行します。よろしいですか。",
+        code: [
+          "npx specdojo register scaffold --project prj-0001",
+          'npx specdojo register add --project prj-0001 --type todo --title "..."',
+        ],
+      },
+      { speaker: "you", text: "お願いします。" },
     ],
   },
   {
-    title: "設定ファイルを作る",
-    body: "register だけを使う最小の設定（プロジェクト ID は prj-0001）を .specdojo/specdojo.config.json に作ります。既存のファイルは上書きしません。",
-    code: ["npx specdojo config init"],
+    title: "一覧を作る",
+    body: "起票した項目は、個票（Markdown）として保存されます。一覧づくりも同じように頼めます。「今の状況は？」と聞けば、状況の確認もできます。",
+    dialog: [
+      { speaker: "you", text: "一覧を作って。" },
+      {
+        speaker: "orchestrator",
+        text: "次を実行します。よろしいですか。",
+        code: ["npx specdojo register build --project prj-0001"],
+      },
+      { speaker: "you", text: "お願いします。" },
+    ],
+  },
+];
+
+const commandSteps: CommandStep[] = [
+  installStep,
+  {
+    title: "オーケストレーターを配置する",
+    body: "コマンドで進める場合は不要です（会話で進める場合だけの手順です）。",
   },
   {
-    title: "登録簿を用意する",
-    body: "docs/ja/projects/prj-0001/controls/project-register/ に登録簿の置き場所と一覧を作ります。",
-    code: ["npx specdojo register scaffold --project prj-0001"],
+    title: "オーケストレーターを起動する",
+    body: "コマンドで進める場合は不要です（会話で進める場合だけの手順です）。",
   },
   {
-    title: "最初の 1 件を起票する",
-    body: "気になっていることを issue として起票します。表示された PJR-XXXX の個票（Markdown）を開き、背景や影響を書き足します。",
+    title: "最初の作業を起票する",
+    body: "登録簿の置き場所と一覧を作り、最初の作業を todo として起票します。表示された PJR-XXXX の個票（Markdown）を開き、背景や完了条件を書き足します。",
     code: [
-      'npx specdojo register add --project prj-0001 --type issue --title "初期スコープが決まっていない"',
+      "npx specdojo register scaffold --project prj-0001",
+      'npx specdojo register add --project prj-0001 --type todo --title "最初のタスク"',
     ],
   },
   {
@@ -76,6 +150,18 @@ const steps = [
     code: ["npx specdojo register build --project prj-0001"],
   },
 ];
+
+const providerScripts = [
+  { provider: "claude（Claude Code）", script: "npm run orch:opus（orch:sonnet も追加されます）" },
+  { provider: "opencode", script: "npm run orch:opencode" },
+  { provider: "codex", script: "npm run orch:codex" },
+  { provider: "antigravity", script: "npm run orch:agy" },
+];
+
+const speakerLabels = {
+  you: "あなた",
+  orchestrator: "オーケストレーター",
+} as const;
 
 const nextLinks = [
   {
@@ -199,29 +285,196 @@ const nextLinks = [
     <section id="start" class="mt-20">
       <h2 class="text-headline-medium text-on-surface">5 つの手順で始める</h2>
       <p class="mt-4 text-body-large text-on-surface">
-        導入から、最初の 1 件を起票して一覧を作るまでを試します。Node.js と Git が使える環境で、上から順に実行してください。
+        導入したら、あとはやりたいことを会話で伝えるだけです。最初の 1 件を起票して一覧を作るまでを試します。Node.js と Git
+        が使える環境で、上から順に進めてください。
       </p>
-      <ol class="mt-6 space-y-6">
-        {
-          steps.map((step, index) => (
-            <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
-              <div class="flex items-baseline gap-3">
-                <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
-                  {index + 1}
-                </span>
-                <h3 class="text-title-medium text-on-surface">{step.title}</h3>
-              </div>
-              <p class="mt-3 text-body-medium text-on-surface-variant">{step.body}</p>
-              <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>
-            </li>
-          ))
-        }
-      </ol>
+      <p class="mt-2 text-body-medium text-on-surface-variant">
+        オーケストレーターは、状態を変える操作を承認を得てから実行し、git push や破壊的な操作は行いません。
+      </p>
+
+      <div
+        data-start-tabs
+        role="tablist"
+        aria-label="始め方"
+        hidden
+        class="mt-8 inline-flex gap-1 rounded-full bg-surface-container p-1"
+      >
+        <button
+          type="button"
+          role="tab"
+          id="start-tab-conversation"
+          aria-controls="start-panel-conversation"
+          aria-selected="true"
+          tabindex="0"
+          class="rounded-full px-5 py-2 text-label-large text-on-surface-variant aria-selected:bg-primary aria-selected:text-on-primary"
+        >
+          会話で始める
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="start-tab-command"
+          aria-controls="start-panel-command"
+          aria-selected="false"
+          tabindex="-1"
+          class="rounded-full px-5 py-2 text-label-large text-on-surface-variant aria-selected:bg-primary aria-selected:text-on-primary"
+        >
+          コマンドで始める（参考）
+        </button>
+      </div>
+
+      <div
+        id="start-panel-conversation"
+        role="tabpanel"
+        aria-labelledby="start-tab-conversation"
+        tabindex="0"
+        class="mt-6"
+      >
+        <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">会話で始める</h3>
+        <ol class="space-y-6">
+          {
+            conversationSteps.map((step, index) => (
+              <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+                <div class="flex items-baseline gap-3">
+                  <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
+                    {index + 1}
+                  </span>
+                  <h4 class="text-title-medium text-on-surface">{step.title}</h4>
+                </div>
+                <p class="mt-3 text-body-medium text-on-surface-variant">{step.body}</p>
+                {step.code && (
+                  <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>
+                )}
+                {step.providers && (
+                  <table class="mt-4 w-full text-left text-body-medium text-on-surface-variant">
+                    <thead>
+                      <tr class="border-b border-outline-variant">
+                        <th scope="col" class="py-2 pr-4 text-label-large text-on-surface">provider</th>
+                        <th scope="col" class="py-2 text-label-large text-on-surface">起動</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {providerScripts.map((row) => (
+                        <tr class="border-b border-outline-variant">
+                          <td class="py-2 pr-4">{row.provider}</td>
+                          <td class="py-2">
+                            <code>{row.script}</code>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+                {step.dialog && (
+                  <ul class="mt-4 space-y-3">
+                    {step.dialog.map((line) => (
+                      <li
+                        class={
+                          line.speaker === "you"
+                            ? "ml-auto max-w-[85%] rounded-large bg-primary-container p-4 text-on-primary-container"
+                            : "mr-auto max-w-[85%] rounded-large bg-surface-container-highest p-4 text-on-surface"
+                        }
+                      >
+                        <p class="text-label-medium">{speakerLabels[line.speaker]}</p>
+                        <p class="mt-1 text-body-medium">{line.text}</p>
+                        {line.code && (
+                          <pre class="mt-3 overflow-x-auto rounded-small bg-inverse-surface p-3 text-body-small text-inverse-on-surface"><code>{line.code.join("\n")}</code></pre>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))
+          }
+        </ol>
+        <p class="mt-6 text-body-medium text-on-surface-variant">
+          起票した項目の実行や成果物の生成も、同じ流れで進められます。詳しい進め方は
+          <a href={orchestratorGuideUrl} class="text-primary underline">オーケストレーター運用ガイド</a>
+          を参照してください。
+        </p>
+      </div>
+
+      <div
+        id="start-panel-command"
+        role="tabpanel"
+        aria-labelledby="start-tab-command"
+        tabindex="0"
+        class="mt-6"
+      >
+        <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">コマンドで始める（参考）</h3>
+        <ol class="space-y-6">
+          {
+            commandSteps.map((step, index) => (
+              <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+                <div class="flex items-baseline gap-3">
+                  <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
+                    {index + 1}
+                  </span>
+                  <h4 class="text-title-medium text-on-surface">{step.title}</h4>
+                </div>
+                <p class="mt-3 text-body-medium text-on-surface-variant">{step.body}</p>
+                {step.code && (
+                  <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>
+                )}
+              </li>
+            ))
+          }
+        </ol>
+        <p class="mt-6 text-body-medium text-on-surface-variant">
+          オーケストレーターを使わずに、CLI を直接実行することもできます。各コマンドの詳しいオプションは
+          <a href={commandReferenceUrl} class="text-primary underline">CLI コマンドリファレンス</a>
+          を参照してください。
+        </p>
+      </div>
+
       <p class="mt-6 text-body-medium text-on-surface-variant">
-        作成された設定と個票を確認して commit すれば完了です。各コマンドの詳しいオプションは
-        <a href={commandReferenceUrl} class="text-primary underline">CLI コマンドリファレンス</a>
-        を参照してください。
+        作成された設定と個票を確認して commit すれば完了です。
       </p>
+
+      {/* JavaScript が無効な環境では、タブを出さずに両方の内容を表示する。 */}
+      <script is:inline>
+        (() => {
+          const tablist = document.querySelector("[data-start-tabs]");
+          if (!tablist) return;
+          const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+          const panels = tabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls")));
+          const select = (selectedIndex, shouldFocus) => {
+            tabs.forEach((tab, index) => {
+              const isSelected = index === selectedIndex;
+              tab.setAttribute("aria-selected", String(isSelected));
+              tab.tabIndex = isSelected ? 0 : -1;
+              const panel = panels[index];
+              if (panel) panel.hidden = !isSelected;
+            });
+            if (shouldFocus) tabs[selectedIndex].focus();
+          };
+          tabs.forEach((tab, index) => {
+            tab.addEventListener("click", () => select(index, false));
+            tab.addEventListener("keydown", (event) => {
+              const last = tabs.length - 1;
+              const next =
+                event.key === "ArrowRight"
+                  ? (index + 1) % tabs.length
+                  : event.key === "ArrowLeft"
+                    ? (index + last) % tabs.length
+                    : event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? last
+                        : -1;
+              if (next < 0) return;
+              event.preventDefault();
+              select(next, true);
+            });
+          });
+          document.querySelectorAll("[data-panel-heading]").forEach((heading) => {
+            heading.hidden = true;
+          });
+          tablist.hidden = false;
+          select(0, false);
+        })();
+      </script>
     </section>
 
     <section id="next" class="mt-20">
