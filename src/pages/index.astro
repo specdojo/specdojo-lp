@@ -1,56 +1,245 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-// 仮のトップページ。本番の構成と原稿は PJR-HEPK、マスコットは PJR-FSMC で扱う。
-const features = [
+// 構成と原稿は PJR-HEPK。マスコットの絵は PJR-FSMC で扱い、ここでは配置場所の仮の枠だけを置く。
+const docsBase = "https://specdojo.github.io/specdojo/ja/";
+const quickStartUrl = `${docsBase}specdojo/guides/quick-start-guide.html`;
+const registerGuideUrl = `${docsBase}specdojo/guides/register-operation-guide.html`;
+const commandReferenceUrl = `${docsBase}specdojo/references/command-reference.html`;
+const overviewGuideUrl = `${docsBase}specdojo/guides/specdojo-overview-guide.html`;
+
+const problems = [
   {
-    title: "色の役割",
-    body: "primary・secondary・surface などの役割で色を指定します。",
+    title: "判断が散らばっている",
+    body: "チャット、会議メモ、チケットに決めたことが分かれていて、どれが最新か分からない。",
   },
   {
-    title: "文字の段階",
-    body: "display から label までの段階で文字の大きさをそろえます。",
+    title: "「なぜ」をたどれない",
+    body: "設計書にはこう書いてあるのに、なぜそう決めたのか、誰も思い出せない。",
   },
   {
-    title: "角丸と影",
-    body: "角丸の段階と影の段階で、面の重なりを表します。",
+    title: "AI に前提を渡せない",
+    body: "AI に作業を頼むたびに、背景や決まりごとを一から説明し直している。",
+  },
+];
+
+const registerTypes = [
+  {
+    type: "issue",
+    title: "問題を書く",
+    body: "起きている問題と、その影響を記録します。",
+  },
+  {
+    type: "decision",
+    title: "判断を書く",
+    body: "検討した選択肢、決めたこと、決めた理由を記録します。",
+  },
+  {
+    type: "todo",
+    title: "作業を書く",
+    body: "やること、完了条件、やった結果を記録します。",
+  },
+];
+
+const steps = [
+  {
+    title: "SpecDojo を導入する",
+    body: "プロジェクト用のリポジトリを作り、SpecDojo を開発用の依存として入れます。",
+    code: [
+      "mkdir app1-specdojo",
+      "git -C app1-specdojo init",
+      "cd app1-specdojo",
+      "npm init -y",
+      "npm install --save-dev specdojo",
+    ],
+  },
+  {
+    title: "設定ファイルを作る",
+    body: "register だけを使う最小の設定（プロジェクト ID は prj-0001）を .specdojo/specdojo.config.json に作ります。既存のファイルは上書きしません。",
+    code: ["npx specdojo config init"],
+  },
+  {
+    title: "登録簿を用意する",
+    body: "docs/ja/projects/prj-0001/controls/project-register/ に登録簿の置き場所と一覧を作ります。",
+    code: ["npx specdojo register scaffold --project prj-0001"],
+  },
+  {
+    title: "最初の 1 件を起票する",
+    body: "気になっていることを issue として起票します。表示された PJR-XXXX の個票（Markdown）を開き、背景や影響を書き足します。",
+    code: [
+      'npx specdojo register add --project prj-0001 --type issue --title "初期スコープが決まっていない"',
+    ],
+  },
+  {
+    title: "一覧を作る",
+    body: "個票から一覧とログを作り直します。controls/project-register/generated/pjr-index.md を開くと、起票した項目が並んでいます。",
+    code: ["npx specdojo register build --project prj-0001"],
+  },
+];
+
+const nextLinks = [
+  {
+    title: "Quick Start ガイド",
+    body: "question を起票し、decision で決め、設計書に書き、change-request で直すまでの流れを 10 分ほどで体験します。",
+    href: quickStartUrl,
+  },
+  {
+    title: "登録簿運用ガイド",
+    body: "issue・decision・todo などの種類と、それぞれの状態の進め方を確認します。",
+    href: registerGuideUrl,
+  },
+  {
+    title: "CLI コマンドリファレンス",
+    body: "register をはじめ、すべてのコマンドとオプションを調べられます。",
+    href: commandReferenceUrl,
+  },
+  {
+    title: "全体概要ガイド",
+    body: "成果物カタログ、schedule、AI による実行まで、SpecDojo の全体像をつかみます。",
+    href: overviewGuideUrl,
   },
 ];
 ---
 
 <BaseLayout
-  title="SpecDojo（仮）"
-  description="SpecDojo のランディングページの仮のトップページです。"
+  title="SpecDojo — 決めて、書いて、鍛え続ける。"
+  description="SpecDojo は、迷っていることを記帳し、決めたことを設計書へ書き、後日の変更も同じ台帳に残すための CLI です。register から 5 つの手順で始められます。"
 >
   <header class="bg-surface-container px-6 py-4">
-    <p class="text-title-large text-on-surface">SpecDojo</p>
+    <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
+      <a href="/" class="text-title-large text-on-surface">SpecDojo</a>
+      <a
+        href={docsBase}
+        class="rounded-full px-4 py-2 text-label-large text-primary hover:bg-primary-container"
+      >
+        ドキュメント
+      </a>
+    </div>
   </header>
 
   <main class="mx-auto max-w-5xl px-6 py-16">
-    <section class="rounded-extra-large bg-primary-container p-10 shadow-elevation-1">
-      <p class="text-label-large text-on-primary-container">準備中</p>
-      <h1 class="mt-2 text-display-small text-on-primary-container md:text-display-medium">
-        SpecDojo のランディングページ（仮）
-      </h1>
-      <p class="mt-4 text-body-large text-on-primary-container">
-        このページは仮のトップページです。本番の原稿は後日差し替えます。
-      </p>
-      <a
-        href="#features"
-        class="mt-8 inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-label-large text-on-primary shadow-elevation-1 hover:shadow-elevation-2"
+    <section
+      class="grid items-center gap-10 rounded-extra-large bg-primary-container p-10 shadow-elevation-1 md:grid-cols-[3fr_2fr]"
+    >
+      <div>
+        <p class="text-label-large text-on-primary-container">仕様の判断台帳</p>
+        <h1 class="mt-2 text-display-small text-on-primary-container md:text-display-medium">
+          決めて、書いて、鍛え続ける。
+        </h1>
+        <p class="mt-4 text-body-large text-on-primary-container">
+          SpecDojo は、迷っていることを記帳し、決めたことを設計書へ書き、後日の変更も同じ台帳に残すための
+          CLI です。記録はすべて Markdown なので、Git でそのまま読めます。
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            href="#start"
+            class="inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-label-large text-on-primary shadow-elevation-1 hover:shadow-elevation-2"
+          >
+            5 つの手順で始める
+          </a>
+          <a
+            href={quickStartUrl}
+            class="inline-flex items-center rounded-full border border-outline px-6 py-2.5 text-label-large text-primary hover:bg-surface-container-low"
+          >
+            Quick Start を読む
+          </a>
+        </div>
+      </div>
+      <div
+        data-placeholder="mascot"
+        class="flex aspect-square items-center justify-center rounded-extra-large border-2 border-dashed border-outline bg-surface-container-lowest"
       >
-        テーマを見る
-      </a>
+        <p class="text-label-large text-on-surface-variant">マスコット（準備中）</p>
+      </div>
     </section>
 
-    <section id="features" class="mt-16">
-      <h2 class="text-headline-medium text-on-surface">テーマの確認</h2>
+    <section id="problems" class="mt-20">
+      <h2 class="text-headline-medium text-on-surface">こんなことはありませんか</h2>
       <ul class="mt-6 grid gap-6 md:grid-cols-3">
         {
-          features.map((feature) => (
+          problems.map((problem) => (
             <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
-              <h3 class="text-title-medium text-on-surface">{feature.title}</h3>
-              <p class="mt-2 text-body-medium text-on-surface-variant">{feature.body}</p>
+              <h3 class="text-title-medium text-on-surface">{problem.title}</h3>
+              <p class="mt-2 text-body-medium text-on-surface-variant">{problem.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 text-body-large text-on-surface">
+        SpecDojo は、判断とその理由を 1 つの台帳に集めます。設計書から台帳の ID をたどれば「なぜこう書いたか」が分かり、同じ台帳を
+        AI に渡せば、前提を説明し直す手間も減ります。
+      </p>
+    </section>
+
+    <section id="register" class="mt-20">
+      <h2 class="text-headline-medium text-on-surface">register の考え方</h2>
+      <p class="mt-4 text-body-large text-on-surface">
+        register（登録簿）は、プロジェクトで起きたことを 1 件ずつ起票して集める台帳です。まずは次の 3 つの種類から始めます。
+      </p>
+      <ul class="mt-6 grid gap-6 md:grid-cols-3">
+        {
+          registerTypes.map((item) => (
+            <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
+              <p class="text-label-medium text-primary">{item.type}</p>
+              <h3 class="mt-1 text-title-medium text-on-surface">{item.title}</h3>
+              <p class="mt-2 text-body-medium text-on-surface-variant">{item.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-6 rounded-large bg-secondary-container p-6">
+        <ul class="list-disc space-y-2 pl-5 text-body-medium text-on-secondary-container">
+          <li>起票すると、1 件ごとに個票（Markdown）ができます。個票が記録の正本です。</li>
+          <li>一覧は個票から生成されます。一覧を手で直す必要はありません。</li>
+          <li>個票はただの Markdown なので、SpecDojo がなくても読め、Git で履歴を追えます。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="start" class="mt-20">
+      <h2 class="text-headline-medium text-on-surface">5 つの手順で始める</h2>
+      <p class="mt-4 text-body-large text-on-surface">
+        導入から、最初の 1 件を起票して一覧を作るまでを試します。Node.js と Git が使える環境で、上から順に実行してください。
+      </p>
+      <ol class="mt-6 space-y-6">
+        {
+          steps.map((step, index) => (
+            <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+              <div class="flex items-baseline gap-3">
+                <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
+                  {index + 1}
+                </span>
+                <h3 class="text-title-medium text-on-surface">{step.title}</h3>
+              </div>
+              <p class="mt-3 text-body-medium text-on-surface-variant">{step.body}</p>
+              <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="mt-6 text-body-medium text-on-surface-variant">
+        作成された設定と個票を確認して commit すれば完了です。各コマンドの詳しいオプションは
+        <a href={commandReferenceUrl} class="text-primary underline">CLI コマンドリファレンス</a>
+        を参照してください。
+      </p>
+    </section>
+
+    <section id="next" class="mt-20">
+      <h2 class="text-headline-medium text-on-surface">次の一歩</h2>
+      <p class="mt-4 text-body-large text-on-surface">
+        起票に慣れたら、decision で決め、設計書に書き、change-request で直す流れへ進みましょう。詳しくはドキュメントサイトで案内しています。
+      </p>
+      <ul class="mt-6 grid gap-6 md:grid-cols-2">
+        {
+          nextLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="block h-full rounded-medium bg-surface-container-low p-6 shadow-elevation-1 hover:shadow-elevation-2"
+              >
+                <h3 class="text-title-medium text-primary">{link.title}</h3>
+                <p class="mt-2 text-body-medium text-on-surface-variant">{link.body}</p>
+              </a>
             </li>
           ))
         }
@@ -59,6 +248,9 @@ const features = [
   </main>
 
   <footer class="border-t border-outline-variant px-6 py-8">
-    <p class="text-body-small text-on-surface-variant">© SpecDojo</p>
+    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+      <p class="text-body-small text-on-surface-variant">© SpecDojo</p>
+      <a href={docsBase} class="text-body-small text-primary underline">ドキュメントサイト</a>
+    </div>
   </footer>
 </BaseLayout>
