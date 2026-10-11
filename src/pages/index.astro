@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// 仮のトップページ。本番の構成と原稿は PJR-HEPK、マスコットは PJR-FSMC で扱う。
+const features = [
+  {
+    title: "色の役割",
+    body: "primary・secondary・surface などの役割で色を指定します。",
+  },
+  {
+    title: "文字の段階",
+    body: "display から label までの段階で文字の大きさをそろえます。",
+  },
+  {
+    title: "角丸と影",
+    body: "角丸の段階と影の段階で、面の重なりを表します。",
+  },
+];
+---
+
+<BaseLayout
+  title="SpecDojo（仮）"
+  description="SpecDojo のランディングページの仮のトップページです。"
+>
+  <header class="bg-surface-container px-6 py-4">
+    <p class="text-title-large text-on-surface">SpecDojo</p>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-6 py-16">
+    <section class="rounded-extra-large bg-primary-container p-10 shadow-elevation-1">
+      <p class="text-label-large text-on-primary-container">準備中</p>
+      <h1 class="mt-2 text-display-small text-on-primary-container md:text-display-medium">
+        SpecDojo のランディングページ（仮）
+      </h1>
+      <p class="mt-4 text-body-large text-on-primary-container">
+        このページは仮のトップページです。本番の原稿は後日差し替えます。
+      </p>
+      <a
+        href="#features"
+        class="mt-8 inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-label-large text-on-primary shadow-elevation-1 hover:shadow-elevation-2"
+      >
+        テーマを見る
+      </a>
+    </section>
+
+    <section id="features" class="mt-16">
+      <h2 class="text-headline-medium text-on-surface">テーマの確認</h2>
+      <ul class="mt-6 grid gap-6 md:grid-cols-3">
+        {
+          features.map((feature) => (
+            <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
+              <h3 class="text-title-medium text-on-surface">{feature.title}</h3>
+              <p class="mt-2 text-body-medium text-on-surface-variant">{feature.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+
+  <footer class="border-t border-outline-variant px-6 py-8">
+    <p class="text-body-small text-on-surface-variant">© SpecDojo</p>
+  </footer>
+</BaseLayout>
