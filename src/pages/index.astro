@@ -23,21 +23,63 @@ const problems = [
   },
 ];
 
-const registerTypes = [
+// register の 7 種類。最初の一歩として入りやすい todo を先頭にし、先頭の 3 種類を大きく見せる。
+// 各説明は pjr-rulebook の item_type 別終端基準と登録簿運用ガイドの種類の表に合わせる。
+type RegisterType = {
+  type: string;
+  title: string;
+  body: string;
+};
+
+const primaryRegisterTypes: RegisterType[] = [
   {
-    type: "issue",
-    title: "問題を書く",
-    body: "起きている問題と、その影響を記録します。",
+    type: "todo",
+    title: "やること",
+    body: "実施が決まっている作業を、完了条件とやった結果とともに記録します。まずはここから始めます。",
   },
   {
     type: "decision",
-    title: "判断を書く",
-    body: "検討した選択肢、決めたこと、決めた理由を記録します。",
+    title: "選択肢から方針を決める",
+    body: "検討した選択肢、決めたこと、決めた理由と影響を記録します。",
   },
   {
-    type: "todo",
-    title: "作業を書く",
-    body: "やること、完了条件、やった結果を記録します。",
+    type: "issue",
+    title: "解決すべき問題",
+    body: "すでに起きている問題を、解決の内容と確認の結果まで記録します。",
+  },
+];
+
+const secondaryRegisterTypes: RegisterType[] = [
+  {
+    type: "question",
+    title: "判断を保留し、後で決める",
+    body: "回答や確認が必要なことを残し、回答が出たら記録します。",
+  },
+  {
+    type: "risk",
+    title: "将来の不確実性",
+    body: "まだ起きていない懸念を、消えるか対応を終えるまで追います。",
+  },
+  {
+    type: "change-request",
+    title: "合意済みの範囲の変更要求",
+    body: "成果物・仕様・計画への変更の要望を、反映と確認まで追います。",
+  },
+  {
+    type: "note",
+    title: "記録として残す",
+    body: "観測や分析を残します。終わらせず、新しい事実を書き足していきます。",
+  },
+];
+
+const prerequisites = [
+  {
+    title: "Node.js 22.13 以上",
+    body: "SpecDojo の CLI は npm で導入します。Git も使える状態にしておきます。",
+  },
+  {
+    title: "Claude Code の導入とログイン",
+    body: "会話で始める場合に必要です。npm run orch:opus は specdojo orchestrator launch --provider claude を経由して claude を起動します。コマンドで始める場合は不要です。",
   },
 ];
 
@@ -171,7 +213,7 @@ const nextLinks = [
   },
   {
     title: "登録簿運用ガイド",
-    body: "issue・decision・todo などの種類と、それぞれの状態の進め方を確認します。",
+    body: "todo・decision・issue をはじめとする 7 つの種類と、それぞれの状態の進め方を確認します。",
     href: registerGuideUrl,
   },
   {
@@ -260,15 +302,27 @@ const nextLinks = [
     <section id="register" class="mt-20">
       <h2 class="text-headline-medium text-on-surface">register の考え方</h2>
       <p class="mt-4 text-body-large text-on-surface">
-        register（登録簿）は、プロジェクトで起きたことを 1 件ずつ起票して集める台帳です。まずは次の 3 つの種類から始めます。
+        register（登録簿）は、プロジェクトで起きたことを 1 件ずつ起票して記録を集める台帳です。種類は 7 つあります。まずは todo
+        から始め、慣れたら decision と issue を使いましょう。
       </p>
       <ul class="mt-6 grid gap-6 md:grid-cols-3">
         {
-          registerTypes.map((item) => (
+          primaryRegisterTypes.map((item) => (
             <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
-              <p class="text-label-medium text-primary">{item.type}</p>
-              <h3 class="mt-1 text-title-medium text-on-surface">{item.title}</h3>
+              <p class="text-label-large text-primary">{item.type}</p>
+              <h3 class="mt-1 text-title-large text-on-surface">{item.title}</h3>
               <p class="mt-2 text-body-medium text-on-surface-variant">{item.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+        {
+          secondaryRegisterTypes.map((item) => (
+            <li class="rounded-small bg-surface-container-low p-4">
+              <p class="text-label-medium text-primary">{item.type}</p>
+              <h3 class="mt-1 text-title-small text-on-surface">{item.title}</h3>
+              <p class="mt-1 text-body-small text-on-surface-variant">{item.body}</p>
             </li>
           ))
         }
@@ -285,12 +339,25 @@ const nextLinks = [
     <section id="start" class="mt-20">
       <h2 class="text-headline-medium text-on-surface">5 つの手順で始める</h2>
       <p class="mt-4 text-body-large text-on-surface">
-        導入したら、あとはやりたいことを会話で伝えるだけです。最初の 1 件を起票して一覧を作るまでを試します。Node.js と Git
-        が使える環境で、上から順に進めてください。
+        導入したら、あとはやりたいことを会話で伝えるだけです。最初の 1 件を起票して一覧を作るまでを、上から順に試します。
       </p>
       <p class="mt-2 text-body-medium text-on-surface-variant">
         オーケストレーターは、状態を変える操作を承認を得てから実行し、git push や破壊的な操作は行いません。
       </p>
+
+      <div class="mt-6 rounded-large bg-secondary-container p-6">
+        <h3 class="text-title-medium text-on-secondary-container">始める前に用意するもの</h3>
+        <ul class="mt-3 space-y-3">
+          {
+            prerequisites.map((item) => (
+              <li>
+                <p class="text-label-large text-on-secondary-container">{item.title}</p>
+                <p class="mt-1 text-body-medium text-on-secondary-container">{item.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
 
       <div
         data-start-tabs
