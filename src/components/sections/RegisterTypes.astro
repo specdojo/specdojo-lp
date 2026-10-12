@@ -1,0 +1,93 @@
+---
+type RegisterType = {
+  type: string;
+  title: string;
+  body: string;
+};
+
+// register の 7 種類。最初の一歩として入りやすい todo を先頭にし、先頭の 3 種類を大きく見せる。
+// 各説明は pjr-rulebook の item_type 別終端基準と登録簿運用ガイドの種類の表に合わせる。
+const primaryRegisterTypes: RegisterType[] = [
+  {
+    type: "todo",
+    title: "やること",
+    body: "実施が決まっている作業を、完了条件とやった結果とともに記録します。まずはここから始めます。",
+  },
+  {
+    type: "decision",
+    title: "選択肢から方針を決める",
+    body: "検討した選択肢、決めたこと、決めた理由と影響を記録します。",
+  },
+  {
+    type: "issue",
+    title: "解決すべき問題",
+    body: "すでに起きている問題を、解決の内容と確認の結果まで記録します。",
+  },
+];
+
+const secondaryRegisterTypes: RegisterType[] = [
+  {
+    type: "question",
+    title: "判断を保留し、後で決める",
+    body: "回答や確認が必要なことを残し、回答が出たら記録します。",
+  },
+  {
+    type: "risk",
+    title: "将来の不確実性",
+    body: "まだ起きていない懸念を、消えるか対応を終えるまで追います。",
+  },
+  {
+    type: "change-request",
+    title: "合意済みの範囲の変更要求",
+    body: "成果物・仕様・計画への変更の要望を、反映と確認まで追います。",
+  },
+  {
+    type: "note",
+    title: "記録として残す",
+    body: "観測や分析を残します。終わらせず、新しい事実を書き足していきます。",
+  },
+];
+---
+
+<section id="register" class="mt-20">
+  <h2 class="text-headline-medium text-on-surface">register の考え方</h2>
+  <p class="mt-4 text-body-large text-on-surface">
+    register（登録簿）は、プロジェクトで起きたことを 1 件ずつ起票して記録を集める台帳です。種類は 7 つあります。まずは todo
+    から始め、慣れたら decision と issue を使いましょう。
+  </p>
+  <div class="mt-6 rounded-large bg-secondary-container px-6 py-4">
+    <p class="text-label-large text-on-secondary-container">register の 1 周</p>
+    <p class="mt-1 text-title-medium text-on-secondary-container">
+      記して（P）→ 形にして（D）→ 磨き続ける（C・A）
+    </p>
+  </div>
+  <ul class="mt-6 grid gap-6 md:grid-cols-3">
+    {
+      primaryRegisterTypes.map((item) => (
+        <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
+          <p class="text-label-large text-primary">{item.type}</p>
+          <h3 class="mt-1 text-title-large text-on-surface">{item.title}</h3>
+          <p class="mt-2 text-body-medium text-on-surface-variant">{item.body}</p>
+        </li>
+      ))
+    }
+  </ul>
+  <ul class="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+    {
+      secondaryRegisterTypes.map((item) => (
+        <li class="rounded-small bg-surface-container-low p-4">
+          <p class="text-label-medium text-primary">{item.type}</p>
+          <h3 class="mt-1 text-title-small text-on-surface">{item.title}</h3>
+          <p class="mt-1 text-body-small text-on-surface-variant">{item.body}</p>
+        </li>
+      ))
+    }
+  </ul>
+  <div class="mt-6 rounded-large bg-secondary-container p-6">
+    <ul class="list-disc space-y-2 pl-5 text-body-medium text-on-secondary-container">
+      <li>起票すると、1 件ごとに個票（Markdown）ができます。個票が記録の正本です。</li>
+      <li>一覧は個票から生成されます。一覧を手で直す必要はありません。</li>
+      <li>個票はただの Markdown なので、SpecDojo がなくても読め、Git で履歴を追えます。</li>
+    </ul>
+  </div>
+</section>

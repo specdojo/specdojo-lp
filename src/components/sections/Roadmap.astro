@@ -1,0 +1,132 @@
+---
+type RoadmapPhase = {
+  phase: string;
+  label: string;
+};
+
+type RoadmapRow = {
+  name: string;
+  status: string;
+  available: boolean;
+  steps: readonly string[];
+};
+
+const roadmapPhases: RoadmapPhase[] = [
+  { phase: "Plan", label: "記して" },
+  { phase: "Do", label: "形にして" },
+  { phase: "Check", label: "磨き続ける（評価）" },
+  { phase: "Action", label: "磨き続ける（確定・改善）" },
+];
+
+const roadmapRows: RoadmapRow[] = [
+  {
+    name: "register",
+    status: "いま使える",
+    available: true,
+    steps: ["気づいたことを起票する", "AI が実行する", "人が確かめる", "完了として残す。必要なら直す"],
+  },
+  {
+    name: "schedule",
+    status: "準備中",
+    available: false,
+    steps: ["作る成果物を計画に並べる", "順に実行する", "品質を評価し、確かめる", "確定して次の反復へ"],
+  },
+  {
+    name: "routine + Job",
+    status: "準備中",
+    available: false,
+    steps: [
+      "何を・いつ・誰が確かめるかを決める",
+      "決まった時刻に自動で実行する",
+      "指名した AI が確かめる",
+      "合格したものだけ取り込み、続きから再開する",
+    ],
+  },
+];
+---
+
+<section id="roadmap" class="mt-20">
+  <p class="text-label-large text-primary">今できること、その先へ</p>
+  <h2 class="mt-2 text-headline-medium text-on-surface">これから</h2>
+  <p class="mt-4 text-body-large text-on-surface">
+    SpecDojo は、気づきを記すところから始まり、計画や定期的な仕事へ広がっていきます。いま使える register
+    と、準備を進めている機能を、同じ 1 周の流れで示します。
+  </p>
+
+  <ul class="mt-6 space-y-4 md:hidden">
+    {
+      roadmapRows.map((row) => (
+        <li class="rounded-large bg-surface-container-low p-5 shadow-elevation-1">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="text-title-large text-on-surface">{row.name}</h3>
+            <span
+              class:list={[
+                "rounded-full px-3 py-1 text-label-medium",
+                row.available
+                  ? "bg-primary-container text-on-primary-container"
+                  : "bg-surface-container-highest text-on-surface-variant",
+              ]}
+            >
+              {row.status}
+            </span>
+          </div>
+          <dl class="mt-5 space-y-4">
+            {roadmapPhases.map((phase, index) => (
+              <div>
+                <dt class="text-label-large text-primary">
+                  {phase.phase}　{phase.label}
+                </dt>
+                <dd class="mt-1 text-body-medium text-on-surface-variant">{row.steps[index]}</dd>
+              </div>
+            ))}
+          </dl>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div
+    role="table"
+    aria-label="SpecDojo のこれからを示す PDCA マトリクス"
+    class="mt-6 hidden overflow-hidden rounded-large border border-outline-variant shadow-elevation-1 md:grid md:grid-cols-[minmax(9rem,1fr)_repeat(4,minmax(0,1fr))]"
+  >
+    <div role="row" class="contents">
+      <div role="columnheader" class="bg-primary-container px-4 py-4"></div>
+      {
+        roadmapPhases.map((phase) => (
+          <div role="columnheader" class="bg-primary-container px-4 py-4 text-on-primary-container">
+            <p class="text-title-medium">{phase.phase}</p>
+            <p class="mt-1 text-label-medium">{phase.label}</p>
+          </div>
+        ))
+      }
+    </div>
+    {
+      roadmapRows.map((row) => (
+        <div role="row" class="contents">
+          <div role="rowheader" class="border-t border-outline-variant bg-surface-container px-4 py-5">
+            <p class="text-title-medium text-on-surface">{row.name}</p>
+            <span
+              class:list={[
+                "mt-2 inline-flex rounded-full px-3 py-1 text-label-medium",
+                row.available
+                  ? "bg-primary-container text-on-primary-container"
+                  : "bg-surface-container-highest text-on-surface-variant",
+              ]}
+            >
+              {row.status}
+            </span>
+          </div>
+          {row.steps.map((step) => (
+            <div
+              role="cell"
+              class="border-t border-outline-variant bg-surface px-4 py-5 text-body-medium text-on-surface-variant"
+            >
+              {step}
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</section>

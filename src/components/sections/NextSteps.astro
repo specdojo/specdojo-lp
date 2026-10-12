@@ -1,0 +1,59 @@
+---
+import {
+  commandReferenceUrl,
+  overviewGuideUrl,
+  quickStartUrl,
+  registerGuideUrl,
+} from "../../lib/links";
+
+type NextLink = {
+  title: string;
+  body: string;
+  href: string;
+};
+
+const nextLinks: NextLink[] = [
+  {
+    title: "Quick Start ガイド",
+    body: "question を起票し、decision で決め、仕様書に書き、change-request で直すまでの流れを 10 分ほどで体験します。",
+    href: quickStartUrl,
+  },
+  {
+    title: "登録簿運用ガイド",
+    body: "todo・decision・issue をはじめとする 7 つの種類と、それぞれの状態の進め方を確認します。",
+    href: registerGuideUrl,
+  },
+  {
+    title: "CLI コマンドリファレンス",
+    body: "register をはじめ、すべてのコマンドとオプションを調べられます。",
+    href: commandReferenceUrl,
+  },
+  {
+    title: "全体概要ガイド",
+    body: "成果物カタログ、schedule、AI による実行まで、SpecDojo の全体像をつかみます。",
+    href: overviewGuideUrl,
+  },
+];
+---
+
+<section id="next" class="mt-20">
+  <h2 class="text-headline-medium text-on-surface">次の一歩</h2>
+  <p class="mt-4 text-body-large text-on-surface">
+    起票に慣れたら、decision で決め、仕様書に書き、change-request で直す流れへ進みましょう。詳しくはドキュメントサイトで案内しています。
+  </p>
+  <ul class="mt-6 grid gap-6 md:grid-cols-2">
+    {
+      nextLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="block h-full rounded-medium bg-surface-container-low p-6 shadow-elevation-1 hover:shadow-elevation-2"
+          >
+            <h3 class="text-title-medium text-primary">{link.title}</h3>
+            <p class="mt-2 text-body-medium text-on-surface-variant">{link.body}</p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
