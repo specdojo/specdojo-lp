@@ -132,7 +132,10 @@ const commandSteps: CommandStep[] = [
 ];
 
 const providerScripts = [
-  { provider: "claude（Claude Code）", script: "npm run orch:opus（orch:sonnet も追加されます）" },
+  {
+    provider: "claude（Claude Code）",
+    script: "npm run orch:opus（orch:sonnet も追加されます）",
+  },
   { provider: "opencode", script: "npm run orch:opencode" },
   { provider: "codex", script: "npm run orch:codex" },
   { provider: "antigravity", script: "npm run orch:agy" },
@@ -147,23 +150,29 @@ const speakerLabels = {
 <section id="start" class="mt-20">
   <h2 class="text-headline-medium text-on-surface">5 つの手順で始める</h2>
   <p class="mt-4 text-body-large text-on-surface">
-    導入したら、あとはやりたいことを会話で伝えるだけです。最初の 1 件を起票して一覧を作るまでを、上から順に試します。
+    導入したら、あとはやりたいことを会話で伝えるだけです。最初の 1
+    件を起票して一覧を作るまでを、上から順に試します。
   </p>
   <p class="mt-2 text-body-medium text-on-surface-variant">
-    オーケストレーターは、状態を変える操作を承認を得てから実行し、git push や破壊的な操作は行いません。
+    オーケストレーターは、状態を変える操作を承認を得てから実行し、git push
+    や破壊的な操作は行いません。
   </p>
 
   <div class="mt-6 rounded-large bg-secondary-container p-6">
-    <h3 class="text-title-medium text-on-secondary-container">始める前に用意するもの</h3>
+    <h3 class="text-title-medium text-on-secondary-container">
+      始める前に用意するもの
+    </h3>
     <ul class="mt-3 space-y-3">
-      {
-        prerequisites.map((item) => (
-          <li>
-            <p class="text-label-large text-on-secondary-container">{item.title}</p>
-            <p class="mt-1 text-body-medium text-on-secondary-container">{item.body}</p>
-          </li>
-        ))
-      }
+      {prerequisites.map((item) => (
+        <li>
+          <p class="text-label-large text-on-secondary-container">
+            {item.title}
+          </p>
+          <p class="mt-1 text-body-medium text-on-secondary-container">
+            {item.body}
+          </p>
+        </li>
+      ))}
     </ul>
   </div>
 
@@ -176,11 +185,16 @@ const speakerLabels = {
 ├── app1-specdojo/            # SpecDojo の記録
 └── app1-specdojo-worktrees/  # exec の作業領域`}</code></pre>
     <ul class="mt-4 list-disc space-y-2 pl-5 text-body-medium text-on-surface-variant">
-      <li>register だけなら、まずは <code>app1-specdojo/</code> だけで始められます。</li>
+      <li>
+        register だけなら、まずは <code>app1-specdojo/</code>{" "}
+        だけで始められます。
+      </li>
       <li>worktree は、exec でタスクごとの作業を隔離するときに作られます。</li>
       <li>
         配置の考え方と詳しい構成は
-        <a href={directoryLayoutUrl} class="text-primary underline">ディレクトリレイアウトリファレンス</a>
+        <a href={directoryLayoutUrl} class="text-primary underline">
+          ディレクトリレイアウトリファレンス
+        </a>
         を参照してください。
       </li>
     </ul>
@@ -189,91 +203,102 @@ const speakerLabels = {
   <Tabs>
     <Fragment slot="conversation">
       <ol class="space-y-6">
-        {
-          conversationSteps.map((step, index) => (
-            <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
-              <div class="flex items-baseline gap-3">
-                <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
-                  {index + 1}
-                </span>
-                <h4 class="text-title-medium text-on-surface">{step.title}</h4>
-              </div>
-              <p class="mt-3 text-body-medium text-on-surface-variant">{step.body}</p>
-              {step.code && (
-                <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>
-              )}
-              {step.providers && (
-                <table class="mt-4 w-full text-left text-body-medium text-on-surface-variant">
-                  <thead>
-                    <tr class="border-b border-outline-variant">
-                      <th scope="col" class="py-2 pr-4 text-label-large text-on-surface">provider</th>
-                      <th scope="col" class="py-2 text-label-large text-on-surface">起動</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {providerScripts.map((row) => (
-                      <tr class="border-b border-outline-variant">
-                        <td class="py-2 pr-4">{row.provider}</td>
-                        <td class="py-2">
-                          <code>{row.script}</code>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-              {step.dialog && (
-                <ul class="mt-4 space-y-3">
-                  {step.dialog.map((line) => (
-                    <li
-                      class={
-                        line.speaker === "you"
-                          ? "ml-auto max-w-[85%] rounded-large bg-primary-container p-4 text-on-primary-container"
-                          : "mr-auto max-w-[85%] rounded-large bg-surface-container-highest p-4 text-on-surface"
-                      }
+        {conversationSteps.map((step, index) => (
+          <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+            <div class="flex items-baseline gap-3">
+              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
+                {index + 1}
+              </span>
+              <h4 class="text-title-medium text-on-surface">{step.title}</h4>
+            </div>
+            <p class="mt-3 text-body-medium text-on-surface-variant">
+              {step.body}
+            </p>
+            {step.code && <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>}
+            {step.providers && (
+              <table class="mt-4 w-full text-left text-body-medium text-on-surface-variant">
+                <thead>
+                  <tr class="border-b border-outline-variant">
+                    <th
+                      scope="col"
+                      class="py-2 pr-4 text-label-large text-on-surface"
                     >
-                      <p class="text-label-medium">{speakerLabels[line.speaker]}</p>
-                      <p class="mt-1 text-body-medium">{line.text}</p>
-                      {line.code && (
-                        <pre class="mt-3 overflow-x-auto rounded-small bg-inverse-surface p-3 text-body-small text-inverse-on-surface"><code>{line.code.join("\n")}</code></pre>
-                      )}
-                    </li>
+                      provider
+                    </th>
+                    <th
+                      scope="col"
+                      class="py-2 text-label-large text-on-surface"
+                    >
+                      起動
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {providerScripts.map((row) => (
+                    <tr class="border-b border-outline-variant">
+                      <td class="py-2 pr-4">{row.provider}</td>
+                      <td class="py-2">
+                        <code>{row.script}</code>
+                      </td>
+                    </tr>
                   ))}
-                </ul>
-              )}
-            </li>
-          ))
-        }
+                </tbody>
+              </table>
+            )}
+            {step.dialog && (
+              <ul class="mt-4 space-y-3">
+                {step.dialog.map((line) => (
+                  <li
+                    class={
+                      line.speaker === "you"
+                        ? "ml-auto max-w-[85%] rounded-large bg-primary-container p-4 text-on-primary-container"
+                        : "mr-auto max-w-[85%] rounded-large bg-surface-container-highest p-4 text-on-surface"
+                    }
+                  >
+                    <p class="text-label-medium">
+                      {speakerLabels[line.speaker]}
+                    </p>
+                    <p class="mt-1 text-body-medium">{line.text}</p>
+                    {line.code && <pre class="mt-3 overflow-x-auto rounded-small bg-inverse-surface p-3 text-body-small text-inverse-on-surface"><code>{line.code.join("\n")}</code></pre>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
       </ol>
       <p class="mt-6 text-body-medium text-on-surface-variant">
         起票した項目の実行や成果物の生成も、同じ流れで進められます。詳しい進め方は
-        <a href={orchestratorGuideUrl} class="text-primary underline">オーケストレーター運用ガイド</a>
+        <a href={orchestratorGuideUrl} class="text-primary underline">
+          オーケストレーター運用ガイド
+        </a>
         を参照してください。
       </p>
     </Fragment>
 
     <Fragment slot="command">
       <ol class="space-y-6">
-        {
-          commandSteps.map((step, index) => (
-            <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
-              <div class="flex items-baseline gap-3">
-                <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
-                  {index + 1}
-                </span>
-                <h4 class="text-title-medium text-on-surface">{step.title}</h4>
-              </div>
-              <p class="mt-3 text-body-medium text-on-surface-variant">{step.body}</p>
-              {step.code && (
-                <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>
-              )}
-            </li>
-          ))
-        }
+        {commandSteps.map((step, index) => (
+          <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+            <div class="flex items-baseline gap-3">
+              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
+                {index + 1}
+              </span>
+              <h4 class="text-title-medium text-on-surface">{step.title}</h4>
+            </div>
+            <p class="mt-3 text-body-medium text-on-surface-variant">
+              {step.body}
+            </p>
+            {step.code && <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>}
+          </li>
+        ))}
       </ol>
       <p class="mt-6 text-body-medium text-on-surface-variant">
-        オーケストレーターを使わずに、CLI を直接実行することもできます。各コマンドの詳しいオプションは
-        <a href={commandReferenceUrl} class="text-primary underline">CLI コマンドリファレンス</a>
+        オーケストレーターを使わずに、CLI
+        を直接実行することもできます。各コマンドの詳しいオプションは
+        <a href={commandReferenceUrl} class="text-primary underline">
+          CLI コマンドリファレンス
+        </a>
         を参照してください。
       </p>
     </Fragment>

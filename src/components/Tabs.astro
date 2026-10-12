@@ -36,7 +36,9 @@
   tabindex="0"
   class="mt-6"
 >
-  <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">会話で始める</h3>
+  <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">
+    会話で始める
+  </h3>
   <slot name="conversation" />
 </div>
 
@@ -47,7 +49,9 @@
   tabindex="0"
   class="mt-6"
 >
-  <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">コマンドで始める（参考）</h3>
+  <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">
+    コマンドで始める（参考）
+  </h3>
   <slot name="command" />
 </div>
 
@@ -59,7 +63,9 @@
     const tablist = document.querySelector("[data-start-tabs]");
     if (!tablist) return;
     const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
-    const panels = tabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls")));
+    const panels = tabs.map((tab) =>
+      document.getElementById(tab.getAttribute("aria-controls")),
+    );
     const select = (selectedIndex, shouldFocus) => {
       tabs.forEach((tab, index) => {
         const isSelected = index === selectedIndex;
