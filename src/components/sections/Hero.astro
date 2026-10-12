@@ -1,7 +1,10 @@
 ---
+import { Image } from "astro:assets";
+
+import dojoOtter from "../../assets/mascot/dojo-otter.webp";
 import { quickStartUrl } from "../../lib/links";
 
-// 構成と原稿は PJR-HEPK。マスコットの絵は PJR-FSMC で扱い、ここでは配置場所の仮の枠だけを置く。
+// 正式版のマスコットが完成するまで、暫定画像を表示する。
 ---
 
 <section
@@ -31,10 +34,11 @@ import { quickStartUrl } from "../../lib/links";
       </a>
     </div>
   </div>
-  <div
-    data-placeholder="mascot"
-    class="flex aspect-square items-center justify-center rounded-extra-large border-2 border-dashed border-outline bg-surface-container-lowest"
-  >
-    <p class="text-label-large text-on-surface-variant">マスコット（準備中）</p>
-  </div>
+  <Image
+    src={dojoOtter}
+    alt="道着を着たカワウソが、筆で書き、SPEC の板を削り出し、磨き上げる 3 コマ"
+    width={640}
+    class="mx-auto h-auto w-full"
+    loading="eager"
+  />
 </section>
