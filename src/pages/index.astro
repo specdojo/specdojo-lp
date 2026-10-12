@@ -7,6 +7,7 @@ const quickStartUrl = `${docsBase}specdojo/guides/quick-start-guide.html`;
 const registerGuideUrl = `${docsBase}specdojo/guides/register-operation-guide.html`;
 const commandReferenceUrl = `${docsBase}specdojo/references/command-reference.html`;
 const overviewGuideUrl = `${docsBase}specdojo/guides/specdojo-overview-guide.html`;
+const directoryLayoutUrl = `${docsBase}specdojo/references/directory-layout-reference.html`;
 
 const problems = [
   {
@@ -15,7 +16,7 @@ const problems = [
   },
   {
     title: "「なぜ」をたどれない",
-    body: "設計書にはこう書いてあるのに、なぜそう決めたのか、誰も思い出せない。",
+    body: "仕様書にはこう書いてあるのに、なぜそう決めたのか、誰も思い出せない。",
   },
   {
     title: "AI に前提を渡せない",
@@ -107,9 +108,10 @@ type CommandStep = {
 };
 
 const installCode = [
-  "mkdir app1-specdojo",
-  "git -C app1-specdojo init",
-  "cd app1-specdojo",
+  "mkdir app1-workspace",
+  "mkdir app1-workspace/app1-specdojo",
+  "git -C app1-workspace/app1-specdojo init",
+  "cd app1-workspace/app1-specdojo",
   "npm init -y",
   "npm install --save-dev specdojo",
   "npx specdojo config init",
@@ -208,7 +210,7 @@ const speakerLabels = {
 const nextLinks = [
   {
     title: "Quick Start ガイド",
-    body: "question を起票し、decision で決め、設計書に書き、change-request で直すまでの流れを 10 分ほどで体験します。",
+    body: "question を起票し、decision で決め、仕様書に書き、change-request で直すまでの流れを 10 分ほどで体験します。",
     href: quickStartUrl,
   },
   {
@@ -230,8 +232,8 @@ const nextLinks = [
 ---
 
 <BaseLayout
-  title="SpecDojo — 決めて、書いて、鍛え続ける。"
-  description="SpecDojo は、迷っていることを記帳し、決めたことを設計書へ書き、後日の変更も同じ台帳に残すための CLI です。register から 5 つの手順で始められます。"
+  title="SpecDojo — 記して、形にして、磨き続ける。"
+  description="SpecDojo は、迷っていることを記帳し、決めたことを要求・要件・仕様へ形にし、後日の変更も同じ台帳に残すための CLI です。いつでも、どこからでも始められ、使うほど育ちます。"
 >
   <header class="bg-surface-container px-6 py-4">
     <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
@@ -252,11 +254,11 @@ const nextLinks = [
       <div>
         <p class="text-label-large text-on-primary-container">仕様の判断台帳</p>
         <h1 class="mt-2 text-display-small text-on-primary-container md:text-display-medium">
-          決めて、書いて、鍛え続ける。
+          記して、形にして、磨き続ける。
         </h1>
         <p class="mt-4 text-body-large text-on-primary-container">
-          SpecDojo は、迷っていることを記帳し、決めたことを設計書へ書き、後日の変更も同じ台帳に残すための
-          CLI です。記録はすべて Markdown なので、Git でそのまま読めます。
+          SpecDojo は、迷っていることを記帳し、決めたことを要求・要件・仕様へ形にし、後日の変更も同じ台帳に残すための
+          CLI です。いつでも、どこからでも小さく始められ、記録は使うほど育ちます。すべて Markdown なので、Git でそのまま読めます。
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a
@@ -294,7 +296,7 @@ const nextLinks = [
         }
       </ul>
       <p class="mt-6 text-body-large text-on-surface">
-        SpecDojo は、判断とその理由を 1 つの台帳に集めます。設計書から台帳の ID をたどれば「なぜこう書いたか」が分かり、同じ台帳を
+        SpecDojo は、判断とその理由を 1 つの台帳に集めます。仕様書から台帳の ID をたどれば「なぜこう書いたか」が分かり、同じ台帳を
         AI に渡せば、前提を説明し直す手間も減ります。
       </p>
     </section>
@@ -358,6 +360,25 @@ const nextLinks = [
           }
         </ul>
       </div>
+
+      <figure class="mt-6 rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+        <figcaption class="text-title-medium text-on-surface">
+          SpecDojo を別リポジトリで使うときの構成
+        </figcaption>
+        <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{`app1-workspace/
+├── app1/                     # プロダクト
+├── app1-specdojo/            # SpecDojo の記録
+└── app1-specdojo-worktrees/  # exec の作業領域`}</code></pre>
+        <ul class="mt-4 list-disc space-y-2 pl-5 text-body-medium text-on-surface-variant">
+          <li>register だけなら、まずは <code>app1-specdojo/</code> だけで始められます。</li>
+          <li>worktree は、exec でタスクごとの作業を隔離するときに作られます。</li>
+          <li>
+            配置の考え方と詳しい構成は
+            <a href={directoryLayoutUrl} class="text-primary underline">ディレクトリレイアウトリファレンス</a>
+            を参照してください。
+          </li>
+        </ul>
+      </figure>
 
       <div
         data-start-tabs
@@ -547,7 +568,7 @@ const nextLinks = [
     <section id="next" class="mt-20">
       <h2 class="text-headline-medium text-on-surface">次の一歩</h2>
       <p class="mt-4 text-body-large text-on-surface">
-        起票に慣れたら、decision で決め、設計書に書き、change-request で直す流れへ進みましょう。詳しくはドキュメントサイトで案内しています。
+        起票に慣れたら、decision で決め、仕様書に書き、change-request で直す流れへ進みましょう。詳しくはドキュメントサイトで案内しています。
       </p>
       <ul class="mt-6 grid gap-6 md:grid-cols-2">
         {
