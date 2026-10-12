@@ -37,12 +37,24 @@ npm run preview
 
 ## 4. 構成
 
-| パス                           | 内容                                               |
-| ------------------------------ | -------------------------------------------------- |
-| `astro.config.mjs`             | Astro の設定。静的出力と Tailwind CSS の Vite 連携 |
-| `src/styles/global.css`        | Tailwind CSS の読み込みと Material 3 のテーマ定義  |
-| `src/layouts/BaseLayout.astro` | 全ページ共通の HTML の骨組み                       |
-| `src/pages/index.astro`        | 仮のトップページ                                   |
+| パス                                          | 内容                                                     |
+| --------------------------------------------- | -------------------------------------------------------- |
+| `astro.config.mjs`                            | Astro の設定。静的出力と Tailwind CSS の Vite 連携       |
+| `src/assets/mascot/dojo-otter.webp`           | Hero に表示する暫定のマスコット画像                      |
+| `src/styles/global.css`                       | Tailwind CSS の読み込みと Material 3 のテーマ定義        |
+| `src/layouts/BaseLayout.astro`                | 全ページ共通の HTML の骨組み                             |
+| `src/pages/index.astro`                       | ヘッダー、7 つの節、フッターを並べるトップページ         |
+| `src/components/SiteHeader.astro`             | サイトのヘッダー                                         |
+| `src/components/SiteFooter.astro`             | サイトのフッター                                         |
+| `src/components/Tabs.astro`                   | 始め方のタブと、切り替え用のインラインスクリプト         |
+| `src/components/sections/Hero.astro`          | Hero と、始め方への導線                                  |
+| `src/components/sections/Problems.astro`      | 利用者が抱える課題                                       |
+| `src/components/sections/RegisterTypes.astro` | register の考え方と 7 種類の項目                         |
+| `src/components/sections/ToolFit.astro`       | 困りごとに応じたツールの使い分け                         |
+| `src/components/sections/GetStarted.astro`    | 会話またはコマンドで始める 5 つの手順                   |
+| `src/components/sections/NextSteps.astro`     | ドキュメントサイトで読む次の内容                         |
+| `src/components/sections/Roadmap.astro`       | register・schedule・routine + Job の PDCA マトリクス      |
+| `src/lib/links.ts`                            | 複数のコンポーネントで使うドキュメントサイトの共通 URL  |
 
 ## 5. テーマ
 
