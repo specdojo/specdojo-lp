@@ -24,6 +24,62 @@ const problems = [
   },
 ];
 
+type ToolFitRow = {
+  situation: string;
+  tool: string;
+  relationship: string;
+};
+
+const toolFitRows: ToolFitRow[] = [
+  {
+    situation: "チームで課題を議論し、通知で共有したい",
+    tool: "GitHub Issues",
+    relationship: "補完。issue を、agent に渡せる完了条件つきの todo へ落とすところで register を使う",
+  },
+  {
+    situation: "目の前のタスクの段取りを AI と決めたい",
+    tool: "agent の plan（Claude Code・Codex の plan mode）",
+    relationship: "補完。plan は段取り、register は「何をなぜ決めたか」を長く残す",
+  },
+  {
+    situation: "1 つの機能を仕様から実装まで素早く作りたい",
+    tool: "Spec Kit（新規開発）、OpenSpec（既存コードへの変更）、Kiro（IDE の中で承認しながら）",
+    relationship: "工程が違う。SpecDojo はその上流で、プロダクトの要求・仕様を決めて保つ",
+  },
+  {
+    situation: "多数の AI agent に作業を配り、並行して大量に回したい",
+    tool: "Beads / Gas Town",
+    relationship: "規模と依存関係の管理はあちらが強い。register は判断を残す側",
+  },
+  {
+    situation: "迷い・判断・保留・リスクを、理由ごと残してあとでたどりたい",
+    tool: "SpecDojo の register",
+    relationship: "いま使える",
+  },
+  {
+    situation: "決めたことを要求・要件・仕様の文書に反映し、保ち続けたい",
+    tool: "SpecDojo（型と品質評価）",
+    relationship: "準備中。PJR-7T8X の「これから」とつながる",
+  },
+];
+
+const toolSources = [
+  { title: "GitHub Issues", href: "https://docs.github.com/en/issues" },
+  {
+    title: "Claude Code — Common workflows",
+    href: "https://code.claude.com/docs/en/common-workflows",
+  },
+  {
+    title: "Codex — Exec plans",
+    href: "https://developers.openai.com/cookbook/articles/codex_exec_plans",
+  },
+  { title: "Spec Kit", href: "https://github.com/github/spec-kit" },
+  { title: "OpenSpec", href: "https://github.com/Fission-AI/OpenSpec" },
+  { title: "Kiro", href: "https://kiro.dev/" },
+  { title: "Beads", href: "https://github.com/gastownhall/beads" },
+  { title: "Gas Town", href: "https://github.com/gastownhall/gastown" },
+];
+
 // register の 7 種類。最初の一歩として入りやすい todo を先頭にし、先頭の 3 種類を大きく見せる。
 // 各説明は pjr-rulebook の item_type 別終端基準と登録簿運用ガイドの種類の表に合わせる。
 type RegisterType = {
@@ -334,6 +390,111 @@ const nextLinks = [
           <li>起票すると、1 件ごとに個票（Markdown）ができます。個票が記録の正本です。</li>
           <li>一覧は個票から生成されます。一覧を手で直す必要はありません。</li>
           <li>個票はただの Markdown なので、SpecDojo がなくても読め、Git で履歴を追えます。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="tool-fit" class="mt-20">
+      <h2 class="text-headline-medium text-on-surface">何に困ったら、何を使う？</h2>
+      <p class="mt-4 text-body-large text-on-surface">
+        ツールに優劣をつけるのではなく、いま解きたい困りごとから選びます。SpecDojo はほかのツールを置き換えるものではなく、判断と理由を残す役割で組み合わせられます。
+      </p>
+
+      <ul class="mt-6 space-y-4 md:hidden">
+        {
+          toolFitRows.map((row) => (
+            <li class="rounded-medium bg-surface-container-low p-5 shadow-elevation-1">
+              <dl class="space-y-4">
+                <div>
+                  <dt class="text-label-large text-primary">こんなときは</dt>
+                  <dd class="mt-1 text-body-medium text-on-surface">{row.situation}</dd>
+                </div>
+                <div>
+                  <dt class="text-label-large text-primary">向いているもの</dt>
+                  <dd class="mt-1 text-body-medium text-on-surface">{row.tool}</dd>
+                </div>
+                <div>
+                  <dt class="text-label-large text-primary">SpecDojo との関係</dt>
+                  <dd class="mt-1 text-body-medium text-on-surface-variant">{row.relationship}</dd>
+                </div>
+              </dl>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div
+        class="mt-6 hidden overflow-hidden rounded-large border border-outline-variant shadow-elevation-1 md:block"
+      >
+        <table class="w-full table-fixed text-left">
+          <thead class="bg-primary-container text-on-primary-container">
+            <tr>
+              <th scope="col" class="w-1/3 px-5 py-4 text-label-large">こんなときは</th>
+              <th scope="col" class="w-1/3 px-5 py-4 text-label-large">向いているもの</th>
+              <th scope="col" class="w-1/3 px-5 py-4 text-label-large">SpecDojo との関係</th>
+            </tr>
+          </thead>
+          <tbody class="bg-surface">
+            {
+              toolFitRows.map((row) => (
+                <tr class="border-t border-outline-variant">
+                  <td class="px-5 py-4 align-top text-body-medium text-on-surface">
+                    {row.situation}
+                  </td>
+                  <td class="px-5 py-4 align-top text-body-medium text-on-surface">{row.tool}</td>
+                  <td class="px-5 py-4 align-top text-body-medium text-on-surface-variant">
+                    {row.relationship}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-8 rounded-large bg-secondary-container p-6">
+        <h3 class="text-title-large text-on-secondary-container">GitHub Issues と register をつなぐ</h3>
+        <p class="mt-2 text-body-medium text-on-secondary-container">
+          GitHub Issues はチームでの議論、通知、開発者以外からの報告に向いています。そこで話した内容を agent
+          が実行できる粒度にするとき、register を使います。
+        </p>
+        <ol class="mt-5 grid gap-4 md:grid-cols-3">
+          <li class="rounded-medium bg-surface-container-lowest p-4 shadow-elevation-1">
+            <p class="text-label-large text-primary">1. 議論して共有する</p>
+            <p class="mt-2 text-body-medium text-on-surface-variant">
+              GitHub Issues で課題を話し合い、通知を使ってチームに共有します。
+            </p>
+          </li>
+          <li class="rounded-medium bg-surface-container-lowest p-4 shadow-elevation-1">
+            <p class="text-label-large text-primary">2. todo に落とす</p>
+            <p class="mt-2 text-body-medium text-on-surface-variant">
+              issue の URL を個票に書いてつなぎ、背景と完了条件のある具体的な todo にします。
+            </p>
+          </li>
+          <li class="rounded-medium bg-surface-container-lowest p-4 shadow-elevation-1">
+            <p class="text-label-large text-primary">3. agent に渡す</p>
+            <p class="mt-2 text-body-medium text-on-surface-variant">
+              完了条件から exec plan を作り、実行する agent に渡します。決めたことは理由ごと残ります。
+            </p>
+          </li>
+        </ol>
+        <p class="mt-4 text-body-small text-on-secondary-container">
+          GitHub との自動連携ではありません。現時点では、issue の URL を個票に書いてつなぐ形です。
+        </p>
+      </div>
+
+      <div class="mt-6">
+        <p class="text-body-small text-on-surface-variant">
+          2026 年 10 月時点の各ツールの公開情報による。
+        </p>
+        <ul class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-body-small">
+          {
+            toolSources.map((source) => (
+              <li>
+                <a href={source.href} class="text-primary underline">{source.title}</a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </section>
