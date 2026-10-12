@@ -1,0 +1,98 @@
+<div
+  data-start-tabs
+  role="tablist"
+  aria-label="始め方"
+  hidden
+  class="mt-8 inline-flex gap-1 rounded-full bg-surface-container p-1"
+>
+  <button
+    type="button"
+    role="tab"
+    id="start-tab-conversation"
+    aria-controls="start-panel-conversation"
+    aria-selected="true"
+    tabindex="0"
+    class="rounded-full px-5 py-2 text-label-large text-on-surface-variant aria-selected:bg-primary aria-selected:text-on-primary"
+  >
+    会話で始める
+  </button>
+  <button
+    type="button"
+    role="tab"
+    id="start-tab-command"
+    aria-controls="start-panel-command"
+    aria-selected="false"
+    tabindex="-1"
+    class="rounded-full px-5 py-2 text-label-large text-on-surface-variant aria-selected:bg-primary aria-selected:text-on-primary"
+  >
+    コマンドで始める（参考）
+  </button>
+</div>
+
+<div
+  id="start-panel-conversation"
+  role="tabpanel"
+  aria-labelledby="start-tab-conversation"
+  tabindex="0"
+  class="mt-6"
+>
+  <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">会話で始める</h3>
+  <slot name="conversation" />
+</div>
+
+<div
+  id="start-panel-command"
+  role="tabpanel"
+  aria-labelledby="start-tab-command"
+  tabindex="0"
+  class="mt-6"
+>
+  <h3 data-panel-heading class="mb-4 text-title-large text-on-surface">コマンドで始める（参考）</h3>
+  <slot name="command" />
+</div>
+
+<slot />
+
+{/* JavaScript が無効な環境では、タブを出さずに両方の内容を表示する。 */}
+<script is:inline>
+  (() => {
+    const tablist = document.querySelector("[data-start-tabs]");
+    if (!tablist) return;
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    const panels = tabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls")));
+    const select = (selectedIndex, shouldFocus) => {
+      tabs.forEach((tab, index) => {
+        const isSelected = index === selectedIndex;
+        tab.setAttribute("aria-selected", String(isSelected));
+        tab.tabIndex = isSelected ? 0 : -1;
+        const panel = panels[index];
+        if (panel) panel.hidden = !isSelected;
+      });
+      if (shouldFocus) tabs[selectedIndex].focus();
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => select(index, false));
+      tab.addEventListener("keydown", (event) => {
+        const last = tabs.length - 1;
+        const next =
+          event.key === "ArrowRight"
+            ? (index + 1) % tabs.length
+            : event.key === "ArrowLeft"
+              ? (index + last) % tabs.length
+              : event.key === "Home"
+                ? 0
+                : event.key === "End"
+                  ? last
+                  : -1;
+        if (next < 0) return;
+        event.preventDefault();
+        select(next, true);
+      });
+    });
+    document.querySelectorAll("[data-panel-heading]").forEach((heading) => {
+      heading.hidden = true;
+    });
+    tablist.hidden = false;
+    select(0, false);
+  })();
+</script>
