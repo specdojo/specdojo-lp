@@ -2,6 +2,8 @@
 
 SpecDojo のランディングページです。Astro の静的出力と Tailwind CSS で作り、Cloudflare 上の静的サイトとして公開します。
 
+採用している技術の一覧は、技術スタック定義 [`docs/ja/product/030-architecture/020-infrastructure/tsd-index.md`](docs/ja/product/030-architecture/020-infrastructure/tsd-index.md) にまとめています。
+
 ## 1. 必要な環境
 
 - Node.js 22.13.0 以上（ビルドだけなら 22.12.0 以上で動きます。ESLint が 22.13.0 以上を求めるため、整形・lint・型検査も行う開発には 22.13.0 以上を使います）
