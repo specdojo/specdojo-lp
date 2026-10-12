@@ -11,16 +11,16 @@ const directoryLayoutUrl = `${docsBase}specdojo/references/directory-layout-refe
 
 const problems = [
   {
-    title: "判断が散らばっている",
-    body: "チャット、会議メモ、チケットに決めたことが分かれていて、どれが最新か分からない。",
+    title: "あの人がいないと進まない",
+    body: "決めたことも、その理由も、一人の頭やチャットの中にある。その人が抜けると、誰も続きを引き継げない。",
   },
   {
-    title: "「なぜ」をたどれない",
-    body: "仕様書にはこう書いてあるのに、なぜそう決めたのか、誰も思い出せない。",
+    title: "前提が伝わらない",
+    body: "何のために、誰のために作るのかが伝わらないまま頼むと、作り手が人でも AI でも、求めていたものとずれたものができてしまう。",
   },
   {
-    title: "AI に前提を渡せない",
-    body: "AI に作業を頼むたびに、背景や決まりごとを一から説明し直している。",
+    title: "書き残す時間がない",
+    body: "人手が限られていて、仕様や決めたことを文書にする手間がとれない。作りかけのまま止まってしまう。",
   },
 ];
 
@@ -264,10 +264,10 @@ const speakerLabels = {
 } as const;
 
 const roadmapPhases = [
-  { phase: "P", label: "記して" },
-  { phase: "D", label: "形にして" },
-  { phase: "C", label: "磨き続ける（評価）" },
-  { phase: "A", label: "磨き続ける（確定・改善）" },
+  { phase: "Plan", label: "記して" },
+  { phase: "Do", label: "形にして" },
+  { phase: "Check", label: "磨き続ける（評価）" },
+  { phase: "Action", label: "磨き続ける（確定・改善）" },
 ] as const;
 
 const roadmapRows = [
@@ -341,12 +341,12 @@ const nextLinks = [
       class="grid items-center gap-10 rounded-extra-large bg-primary-container p-10 shadow-elevation-1 md:grid-cols-[3fr_2fr]"
     >
       <div>
-        <p class="text-label-large text-on-primary-container">仕様の判断台帳</p>
+        <p class="text-label-large text-on-primary-container">Spec道（仕様道）の道場</p>
         <h1 class="mt-2 text-display-small text-on-primary-container md:text-display-medium">
-          記して、形にして、磨き続ける。
+          記して、形にして、<br/>磨き続ける。
         </h1>
         <p class="mt-4 text-body-large text-on-primary-container">
-          SpecDojo は、迷っていることを記帳し、決めたことを要求・要件・仕様へ形にし、後日の変更も同じ台帳に残すための
+          SpecDojo は、気づいたことを記帳し、決めたことを要求・要件・仕様へ形にし、後日の変更も同じ台帳に残すための
           CLI です。いつでも、どこからでも小さく始められ、記録は使うほど育ちます。すべて Markdown なので、Git でそのまま読めます。
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
@@ -385,8 +385,8 @@ const nextLinks = [
         }
       </ul>
       <p class="mt-6 text-body-large text-on-surface">
-        SpecDojo は、判断とその理由を 1 つの台帳に集めます。仕様書から台帳の ID をたどれば「なぜこう書いたか」が分かり、同じ台帳を
-        AI に渡せば、前提を説明し直す手間も減ります。
+        SpecDojo は、決めたこととその理由を、誰でも読める Markdown の台帳に残します。人と AI が同じ前提を見て進められ、誰かが抜けても続きから引き継げます。
+        記録は会話で伝えるだけで記帳でき、本文は AI が書き、人は確かめて承認するだけです。
       </p>
     </section>
 
