@@ -48,10 +48,10 @@ const prerequisites: Prerequisite[] = [
 ];
 
 const installCode = [
-  "mkdir app1-workspace",
-  "mkdir app1-workspace/app1-specdojo",
-  "git -C app1-workspace/app1-specdojo init",
-  "cd app1-workspace/app1-specdojo",
+  "mkdir landing-page-workspace",
+  "mkdir landing-page-workspace/landing-page-specdojo",
+  "git -C landing-page-workspace/landing-page-specdojo init",
+  "cd landing-page-workspace/landing-page-specdojo",
   "npm init -y",
   'echo "node_modules/" > .gitignore',
   "npm install --save-dev specdojo",
@@ -59,7 +59,7 @@ const installCode = [
 
 const installStep = {
   title: "SpecDojo を導入する",
-  body: "ここでは、すでに開発を進めているランディングページ（LP）のリポジトリ app1 に、SpecDojo を後から加える例で進めます。app1 は npm で開発していて、npm run dev で表示を確かめ、npm run build でビルドできるものとします。app1 とは別に、記録を置くプロジェクト用のリポジトリを作り、SpecDojo を開発用の依存として入れます。",
+  body: "ここでは、すでに開発を進めているランディングページ（LP）のリポジトリ landing-page に、SpecDojo を後から加える例で進めます。landing-page は npm で開発していて、npm run dev で表示を確かめ、npm run build でビルドできるものとします。landing-page とは別に、記録を置くプロジェクト用のリポジトリを作り、SpecDojo を開発用の依存として入れます。",
   code: installCode,
 };
 
@@ -82,7 +82,9 @@ const addIssueAndBuildCode = [
 
 const reposConfigCode = [
   "# .specdojo/specdojo.config.json の projects.prj-0001 に追加する",
-  '"repos": [{ "name": "app1", "path": "../app1", "integration_branch": "main" }]',
+  '"repos": [',
+  '  { "name": "landing-page", "path": "../landing-page", "integration_branch": "main" }',
+  "]",
 ];
 
 const execCode = [
@@ -90,9 +92,12 @@ const execCode = [
   "  --executor-by claude-executor --reporter-by claude-reporter",
 ];
 
-const execLogCode = ["git -C ../app1 log --oneline -1", "git log --oneline -1"];
+const execLogCode = [
+  "git -C ../landing-page log --oneline -1",
+  "git log --oneline -1",
+];
 
-const checkCode = ["npm --prefix ../app1 run dev"];
+const checkCode = ["npm --prefix ../landing-page run dev"];
 
 const improveCode = [
   "npx specdojo register add --project prj-0001 --type todo \\",
@@ -153,22 +158,22 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
     steps: [
       {
         title: "LP のリポジトリをつなぐ",
-        body: "開発中の LP（app1）を、設定の repos に宣言します。宣言したリポジトリだけを、AI が読み書きできます。追加したらオーケストレーターを起動し直します。AI の作業は commit 済みの内容から作る作業領域で行うため、ここまでの設定と個票は commit しておきます。",
+        body: "開発中の LP（landing-page）を、設定の repos に宣言します。宣言したリポジトリだけを、AI が読み書きできます。追加したらオーケストレーターを起動し直します。AI の作業は commit 済みの内容から作る作業領域で行うため、ここまでの設定と個票は commit しておきます。",
         dialog: [
           {
             speaker: "you",
-            text: "LP のリポジトリ ../app1 を、このプロジェクトにつないで。",
+            text: "LP のリポジトリ ../landing-page を、このプロジェクトにつないで。",
           },
           {
             speaker: "orchestrator",
-            text: "specdojo.config.json の repos に app1 を追加します。よろしいですか。",
+            text: "specdojo.config.json の repos に landing-page を追加します。よろしいですか。",
           },
           { speaker: "you", text: "お願いします。" },
         ],
       },
       {
         title: "完了条件を書いて、AI に実行させる（Do）",
-        body: "完了条件が、そのまま AI への指示になります。作業はタスクごとの作業領域（git worktree）で行うので、失敗しても手元の LP は汚れません。実装した AI とは別の AI が検証の結果から報告をまとめます。成功すると、app1 には FAQ の変更が、プロジェクトのリポジトリには計画・報告・状態の記録が、それぞれ commit されて統合されます。",
+        body: "完了条件が、そのまま AI への指示になります。作業はタスクごとの作業領域（git worktree）で行うので、失敗しても手元の LP は汚れません。実装した AI とは別の AI が検証の結果から報告をまとめます。成功すると、landing-page には FAQ の変更が、プロジェクトのリポジトリには計画・報告・状態の記録が、それぞれ commit されて統合されます。",
         dialog: [
           {
             speaker: "you",
@@ -182,18 +187,18 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
           { speaker: "you", text: "お願いします。" },
           {
             speaker: "orchestrator",
-            text: "成功しました。app1 とプロジェクトのリポジトリの両方に、exec(register PJR-XXXX) の commit が入っています。項目は確認待ち（review）です。",
+            text: "成功しました。landing-page とプロジェクトのリポジトリの両方に、exec(register PJR-XXXX) の commit が入っています。項目は確認待ち（review）です。",
           },
         ],
       },
       {
         title: "確かめる（Check）",
-        body: "AI がまとめた報告で完了条件ごとの検証結果を読み、app1 を手元で動かして FAQ の表示を確かめます。",
+        body: "AI がまとめた報告で完了条件ごとの検証結果を読み、landing-page を手元で動かして FAQ の表示を確かめます。",
         dialog: [
           { speaker: "you", text: "報告を見せて。" },
           {
             speaker: "orchestrator",
-            text: "完了条件ごとの結果です。5 つの質問への回答、メニューからの移動、npm run build のいずれも満たしています。表示は npm --prefix ../app1 run dev で確かめられます。",
+            text: "完了条件ごとの結果です。5 つの質問への回答、メニューからの移動、npm run build のいずれも満たしています。表示は npm --prefix ../landing-page run dev で確かめられます。",
           },
         ],
       },
@@ -244,7 +249,7 @@ const commandGroups: StepGroup<CommandStep>[] = [
     steps: [
       {
         title: "LP のリポジトリをつなぐ",
-        body: "設定の repos に開発中の LP（app1）を宣言します。AI の作業は commit 済みの内容から作る作業領域で行うため、ここまでの設定と個票を commit します。",
+        body: "設定の repos に開発中の LP（landing-page）を宣言します。AI の作業は commit 済みの内容から作る作業領域で行うため、ここまでの設定と個票を commit します。",
         code: [
           ...reposConfigCode,
           "",
@@ -254,12 +259,12 @@ const commandGroups: StepGroup<CommandStep>[] = [
       },
       {
         title: "完了条件を書いて、AI に実行させる（Do）",
-        body: "FAQ の todo の個票に、答える質問の数、メニューからの移動、npm run build が通ることを完了条件として書き、commit してから実行します。executor が app1 で作業し、reporter が報告をまとめ、成功したものだけが統合されます。app1 とプロジェクトのリポジトリの両方に、exec(register PJR-XXXX) の commit が入ります。",
+        body: "FAQ の todo の個票に、答える質問の数、メニューからの移動、npm run build が通ることを完了条件として書き、commit してから実行します。executor が landing-page で作業し、reporter が報告をまとめ、成功したものだけが統合されます。landing-page とプロジェクトのリポジトリの両方に、exec(register PJR-XXXX) の commit が入ります。",
         code: [...execCode, "", ...execLogCode],
       },
       {
         title: "確かめる（Check）",
-        body: "項目は確認待ち（review）になります。計画と報告は execution/exec/ 配下に残ります。報告で完了条件ごとの結果を読み、app1 を動かして FAQ を確かめます。",
+        body: "項目は確認待ち（review）になります。計画と報告は execution/exec/ 配下に残ります。報告で完了条件ごとの結果を読み、landing-page を動かして FAQ を確かめます。",
         code: checkCode,
       },
       {
@@ -322,13 +327,13 @@ const speakerLabels = {
     <figcaption class="text-title-medium text-on-surface">
       SpecDojo を別リポジトリで使うときの構成
     </figcaption>
-    <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{`app1-workspace/
-├── app1/                     # 開発中の LP（プロダクト）
-├── app1-specdojo/            # SpecDojo の記録
-└── app1-specdojo-worktrees/  # exec の作業領域`}</code></pre>
+    <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{`landing-page-workspace/
+├── landing-page/                     # 開発中の LP（プロダクト）
+├── landing-page-specdojo/            # SpecDojo の記録
+└── landing-page-specdojo-worktrees/  # exec の作業領域`}</code></pre>
     <ul class="mt-4 list-disc space-y-2 pl-5 text-body-medium text-on-surface-variant">
       <li>
-        register だけなら、まずは <code>app1-specdojo/</code>{" "}
+        register だけなら、まずは <code>landing-page-specdojo/</code>{" "}
         だけで始められます。
       </li>
       <li>worktree は、exec でタスクごとの作業を隔離するときに作られます。</li>
