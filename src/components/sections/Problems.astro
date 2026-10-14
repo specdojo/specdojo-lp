@@ -6,10 +6,6 @@ type Problem = {
 
 const problems: Problem[] = [
   {
-    title: "あの人がいないと進まない",
-    body: "決めたことも、その理由も、一人の頭やチャットの中にある。その人が抜けると、誰も続きを引き継げない。",
-  },
-  {
     title: "前提が伝わらない",
     body: "何のために、誰のために作るのかが伝わらないまま頼むと、作り手が人でも AI でも、求めていたものとずれたものができてしまう。",
   },
@@ -17,23 +13,29 @@ const problems: Problem[] = [
     title: "書き残す時間がない",
     body: "人手が限られていて、仕様や決めたことを文書にする手間がとれない。作りかけのまま止まってしまう。",
   },
+  {
+    title: "あの人がいないと進まない",
+    body: "決めたことも、その理由も、一人の頭やチャットの中にある。その人が抜けると、誰も続きを引き継げない。",
+  },
 ];
 ---
 
 <section id="problems" class="mt-20">
   <h2 class="text-headline-medium text-on-surface">こんなことはありませんか</h2>
   <ul class="mt-6 grid gap-6 md:grid-cols-3">
-    {
-      problems.map((problem) => (
-        <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
-          <h3 class="text-title-medium text-on-surface">{problem.title}</h3>
-          <p class="mt-2 text-body-medium text-on-surface-variant">{problem.body}</p>
-        </li>
-      ))
-    }
+    {problems.map((problem) => (
+      <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
+        <h3 class="text-title-medium text-on-surface">{problem.title}</h3>
+        <p class="mt-2 text-body-medium text-on-surface-variant">
+          {problem.body}
+        </p>
+      </li>
+    ))}
   </ul>
   <p class="mt-6 text-body-large text-on-surface">
-    SpecDojo は、決めたこととその理由を、誰でも読める Markdown の台帳に残します。人と AI が同じ前提を見て進められ、誰かが抜けても続きから引き継げます。
-    記録は会話で伝えるだけで記帳でき、本文は AI が書き、人は確かめて承認するだけです。
+    SpecDojo は、決めたこととその理由を、誰でも読める Markdown
+    の台帳に残します。人と AI が同じ前提を見て進められます。
+    記録は会話で伝えるだけで記帳でき、本文は AI
+    が書き、人は確かめて承認するだけです。だから誰かが抜けても、続きから引き継げます。
   </p>
 </section>

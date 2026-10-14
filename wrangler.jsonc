@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "specdojo-lp",
+  // Cloudflare の推奨に従い、設定した日の日付にする。
+  "compatibility_date": "2026-10-14",
+  "assets": {
+    "directory": "./dist",
+  },
+}

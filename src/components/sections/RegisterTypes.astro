@@ -52,7 +52,8 @@ const secondaryRegisterTypes: RegisterType[] = [
 <section id="register" class="mt-20">
   <h2 class="text-headline-medium text-on-surface">register の考え方</h2>
   <p class="mt-4 text-body-large text-on-surface">
-    register（登録簿）は、プロジェクトで起きたことを 1 件ずつ起票して記録を集める台帳です。種類は 7 つあります。まずは todo
+    register（登録簿）は、プロジェクトで起きたことを 1
+    件ずつ起票して記録を集める台帳です。種類は 7 つあります。まずは todo
     から始め、慣れたら decision と issue を使いましょう。
   </p>
   <div class="mt-6 rounded-large bg-secondary-container px-6 py-4">
@@ -62,32 +63,33 @@ const secondaryRegisterTypes: RegisterType[] = [
     </p>
   </div>
   <ul class="mt-6 grid gap-6 md:grid-cols-3">
-    {
-      primaryRegisterTypes.map((item) => (
-        <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
-          <p class="text-label-large text-primary">{item.type}</p>
-          <h3 class="mt-1 text-title-large text-on-surface">{item.title}</h3>
-          <p class="mt-2 text-body-medium text-on-surface-variant">{item.body}</p>
-        </li>
-      ))
-    }
+    {primaryRegisterTypes.map((item) => (
+      <li class="rounded-medium bg-surface-container-low p-6 shadow-elevation-1">
+        <p class="text-label-large text-primary">{item.type}</p>
+        <h3 class="mt-1 text-title-large text-on-surface">{item.title}</h3>
+        <p class="mt-2 text-body-medium text-on-surface-variant">{item.body}</p>
+      </li>
+    ))}
   </ul>
   <ul class="mt-4 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-    {
-      secondaryRegisterTypes.map((item) => (
-        <li class="rounded-small bg-surface-container-low p-4">
-          <p class="text-label-medium text-primary">{item.type}</p>
-          <h3 class="mt-1 text-title-small text-on-surface">{item.title}</h3>
-          <p class="mt-1 text-body-small text-on-surface-variant">{item.body}</p>
-        </li>
-      ))
-    }
+    {secondaryRegisterTypes.map((item) => (
+      <li class="rounded-small bg-surface-container-low p-4">
+        <p class="text-label-medium text-primary">{item.type}</p>
+        <h3 class="mt-1 text-title-small text-on-surface">{item.title}</h3>
+        <p class="mt-1 text-body-small text-on-surface-variant">{item.body}</p>
+      </li>
+    ))}
   </ul>
   <div class="mt-6 rounded-large bg-secondary-container p-6">
     <ul class="list-disc space-y-2 pl-5 text-body-medium text-on-secondary-container">
-      <li>起票すると、1 件ごとに個票（Markdown）ができます。個票が記録の正本です。</li>
+      <li>
+        起票すると、1 件ごとに個票（Markdown）ができます。個票が記録の正本です。
+      </li>
       <li>一覧は個票から生成されます。一覧を手で直す必要はありません。</li>
-      <li>個票はただの Markdown なので、SpecDojo がなくても読め、Git で履歴を追えます。</li>
+      <li>
+        個票はただの Markdown なので、SpecDojo がなくても読め、Git
+        で履歴を追えます。
+      </li>
     </ul>
   </div>
 </section>

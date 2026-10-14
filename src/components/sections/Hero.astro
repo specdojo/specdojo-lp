@@ -1,20 +1,28 @@
 ---
+import { Image } from "astro:assets";
+
+import dojoOtter from "../../assets/mascot/dojo-otter.webp";
 import { quickStartUrl } from "../../lib/links";
 
-// 構成と原稿は PJR-HEPK。マスコットの絵は PJR-FSMC で扱い、ここでは配置場所の仮の枠だけを置く。
+// 正式版のマスコットが完成するまで、暫定画像を表示する。
 ---
 
-<section
-  class="grid items-center gap-10 rounded-extra-large bg-primary-container p-10 shadow-elevation-1 md:grid-cols-[3fr_2fr]"
->
+<section class="grid items-center gap-10 rounded-extra-large bg-primary-container p-10 shadow-elevation-1 md:grid-cols-[3fr_2fr]">
   <div>
-    <p class="text-label-large text-on-primary-container">Spec道（仕様道）の道場</p>
+    <p class="text-label-large text-on-primary-container">
+      はじめよう、Spec道（仕様道）
+    </p>
     <h1 class="mt-2 text-display-small text-on-primary-container md:text-display-medium">
-      記して、形にして、<br />磨き続ける。
+      記して、形にして、
+      <br />
+      磨き続ける。
     </h1>
     <p class="mt-4 text-body-large text-on-primary-container">
-      SpecDojo は、気づいたことを記帳し、決めたことを要求・要件・仕様へ形にし、後日の変更も同じ台帳に残すための
-      CLI です。いつでも、どこからでも小さく始められ、記録は使うほど育ちます。すべて Markdown なので、Git でそのまま読めます。
+      SpecDojo
+      は、気づいたことを記帳し、決めたことを要求・要件・仕様へ形にし、後日の変更も同じ台帳に残すための
+      CLI
+      です。いつでも、どこからでも小さく始められ、記録は使うほど育ちます。すべて
+      Markdown なので、Git でそのまま読めます。
     </p>
     <div class="mt-8 flex flex-wrap gap-3">
       <a
@@ -24,6 +32,12 @@ import { quickStartUrl } from "../../lib/links";
         5 つの手順で始める
       </a>
       <a
+        href="#run"
+        class="inline-flex items-center rounded-full bg-secondary px-6 py-2.5 text-label-large text-on-secondary shadow-elevation-1 hover:shadow-elevation-2"
+      >
+        4 つの手順で回す
+      </a>
+      <a
         href={quickStartUrl}
         class="inline-flex items-center rounded-full border border-outline px-6 py-2.5 text-label-large text-primary hover:bg-surface-container-low"
       >
@@ -31,10 +45,11 @@ import { quickStartUrl } from "../../lib/links";
       </a>
     </div>
   </div>
-  <div
-    data-placeholder="mascot"
-    class="flex aspect-square items-center justify-center rounded-extra-large border-2 border-dashed border-outline bg-surface-container-lowest"
-  >
-    <p class="text-label-large text-on-surface-variant">マスコット（準備中）</p>
-  </div>
+  <Image
+    src={dojoOtter}
+    alt="道着を着たカワウソが、筆で書き、SPEC の板を削り出し、磨き上げる 3 コマ"
+    width={640}
+    class="mx-auto h-auto w-full"
+    loading="eager"
+  />
 </section>
