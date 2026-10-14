@@ -31,6 +31,11 @@ type CommandStep = {
   code?: string[];
 };
 
+type StepGroup<Step> = {
+  title: string;
+  steps: Step[];
+};
+
 const prerequisites: Prerequisite[] = [
   {
     title: "Node.js 22.13 以上",
@@ -38,96 +43,235 @@ const prerequisites: Prerequisite[] = [
   },
   {
     title: "Claude Code の導入とログイン",
-    body: "会話で始める場合に必要です。npm run orch:opus は specdojo orchestrator launch --provider claude を経由して claude を起動します。コマンドで始める場合は不要です。",
+    body: "会話で進める場合と、AI に実行させる場合に必要です。npm run orch:opus は specdojo orchestrator launch --provider claude を経由して claude を起動します。ほかの provider を選ぶ場合は、その CLI を用意します。",
   },
 ];
 
 const installCode = [
-  "mkdir app1-workspace",
-  "mkdir app1-workspace/app1-specdojo",
-  "git -C app1-workspace/app1-specdojo init",
-  "cd app1-workspace/app1-specdojo",
+  "mkdir landing-page-workspace",
+  "mkdir landing-page-workspace/landing-page-specdojo",
+  "git -C landing-page-workspace/landing-page-specdojo init",
+  "cd landing-page-workspace/landing-page-specdojo",
   "npm init -y",
   "npm install --save-dev specdojo",
-  "npx specdojo config init",
 ];
 
 const installStep = {
   title: "SpecDojo を導入する",
-  body: "プロジェクト用のリポジトリを作り、SpecDojo を開発用の依存として入れます。config init は、register だけを使う最小の設定（プロジェクト ID は prj-0001）を .specdojo/specdojo.config.json に作ります。",
+  body: "ここでは、すでに開発を進めているランディングページ（LP）のリポジトリ landing-page に、SpecDojo を後から加える例で進めます。landing-page は npm で開発していて、npm run dev で表示を確かめ、npm run build でビルドできるものとします。landing-page とは別に、記録を置くプロジェクト用のリポジトリを作り、SpecDojo を開発用の依存として入れます。",
   code: installCode,
 };
 
+const initStep = {
+  title: "初期設定する",
+  body: "質問に答えると、設定（プロジェクト ID は prj-0001）、登録簿、人と AI の名簿、AI に実行させるための設定、オーケストレーターを起動する npm script がまとめて作られます。使う AI ツール（provider）と、AI に実行させるか（exec）を尋ねられたら、Claude Code の場合は claude と「はい」を選びます。",
+  code: ["npx specdojo init"],
+};
+
+const addTodoCode = [
+  "npx specdojo register add --project prj-0001 --type todo \\",
+  '  --title "LP によくある質問（FAQ）の節を加える"',
+];
+
+const addIssueAndBuildCode = [
+  "npx specdojo register add --project prj-0001 --type issue \\",
+  '  --title "SNS で共有したときに表示される画像（OGP）がない"',
+  "npx specdojo register build --project prj-0001",
+];
+
+const reposConfigCode = [
+  "# .specdojo/specdojo.config.json の projects.prj-0001 に追加する",
+  '"repos": [',
+  '  { "name": "landing-page", "path": "../landing-page", "integration_branch": "main" }',
+  "]",
+];
+
+const execCode = [
+  "npx specdojo exec run --project prj-0001 --register PJR-XXXX --worktree \\",
+  "  --executor-by claude-executor --reporter-by claude-reporter",
+];
+
+const execLogCode = [
+  "git -C ../landing-page log --oneline -1",
+  "git log --oneline -1",
+];
+
+const checkCode = ["npm --prefix ../landing-page run dev"];
+
+const improveCode = [
+  "npx specdojo register add --project prj-0001 --type todo \\",
+  '  --title "FAQ の回答をスマートフォンで読みやすくする" --commit',
+  "npx specdojo register close --project prj-0001 --id PJR-XXXX \\",
+  '  --conclusion "FAQ の節を加え、問い合わせの多い 5 つの質問に答えた" --commit',
+];
+
 // 「始める」の会話例は specdojo の README「会話で操作する」に合わせる。
-const conversationSteps: ConversationStep[] = [
-  installStep,
+const conversationGroups: StepGroup<ConversationStep>[] = [
   {
-    title: "オーケストレーターを配置する",
-    body: "SpecDojo には、会話を CLI の操作に置き換えてくれる対話型オーケストレーターが入っています。使う AI ツール（provider）の設定を配置します。次は Claude Code の例です。package.json に起動用の script が追加されます。",
-    code: ["npx specdojo config scaffold --provider claude"],
-  },
-  {
-    title: "オーケストレーターを起動する",
-    body: "追加された script で起動します。ほかの provider を使う場合は、config scaffold の --provider を変えて配置し、次の script で起動します。",
-    code: ["npm run orch:opus"],
-    providers: true,
-  },
-  {
-    title: "最初の作業を起票する",
-    body: "やりたいことを、そのまま伝えます。オーケストレーターがコマンドに置き換え、実行する前に内容を見せて確認を求めます。",
-    dialog: [
+    title: "5 つの手順で始める",
+    steps: [
+      installStep,
+      initStep,
       {
-        speaker: "you",
-        text: "このプロジェクトを始めたい。まず登録簿を用意して、最初の作業を todo として起票して。",
+        title: "オーケストレーターを起動する",
+        body: "SpecDojo には、会話を CLI の操作に置き換えてくれる対話型オーケストレーターが入っています。初期設定で追加された script で起動します。ほかの provider を選んだ場合は、次の script で起動します。",
+        code: ["npm run orch:opus"],
+        providers: true,
       },
       {
-        speaker: "orchestrator",
-        text: "次を実行します。よろしいですか。",
-        code: [
-          "npx specdojo register scaffold --project prj-0001",
-          'npx specdojo register add --project prj-0001 --type todo --title "..."',
+        title: "LP に加えたいことを起票する（Plan）",
+        body: "やりたいことを、そのまま伝えます。オーケストレーターがコマンドに置き換え、実行する前に内容を見せて確認を求めます。",
+        dialog: [
+          {
+            speaker: "you",
+            text: "問い合わせで同じ質問が続いている。LP によくある質問の節を加えたいので、todo として起票して。",
+          },
+          {
+            speaker: "orchestrator",
+            text: "次を実行します。よろしいですか。",
+            code: addTodoCode,
+          },
+          { speaker: "you", text: "お願いします。" },
         ],
       },
-      { speaker: "you", text: "お願いします。" },
+      {
+        title: "気づいたことも記して、一覧を作る",
+        body: "作業だけでなく、気づいた問題（issue）や決めたいこと（decision）も、思いついたときに起票できます。起票した項目は個票（Markdown）として保存され、一覧にまとまります。「今の状況は？」と聞けば、状況の確認もできます。",
+        dialog: [
+          {
+            speaker: "you",
+            text: "そういえば、SNS で共有したときの画像もない。issue として記録して、一覧を作って。",
+          },
+          {
+            speaker: "orchestrator",
+            text: "次を実行します。よろしいですか。",
+            code: addIssueAndBuildCode,
+          },
+          { speaker: "you", text: "お願いします。" },
+        ],
+      },
     ],
   },
   {
-    title: "一覧を作る",
-    body: "起票した項目は、個票（Markdown）として保存されます。一覧づくりも同じように頼めます。「今の状況は？」と聞けば、状況の確認もできます。",
-    dialog: [
-      { speaker: "you", text: "一覧を作って。" },
+    title: "4 つの手順で回す",
+    steps: [
       {
-        speaker: "orchestrator",
-        text: "次を実行します。よろしいですか。",
-        code: ["npx specdojo register build --project prj-0001"],
+        title: "LP のリポジトリをつなぐ",
+        body: "開発中の LP（landing-page）を、設定の repos に宣言します。宣言したリポジトリだけを、AI が読み書きできます。追加したらオーケストレーターを起動し直します。AI の作業は commit 済みの内容から作る作業領域で行うため、ここまでの設定と個票は commit しておきます。",
+        dialog: [
+          {
+            speaker: "you",
+            text: "LP のリポジトリ ../landing-page を、このプロジェクトにつないで。",
+          },
+          {
+            speaker: "orchestrator",
+            text: "specdojo.config.json の repos に landing-page を追加します。よろしいですか。",
+          },
+          { speaker: "you", text: "お願いします。" },
+        ],
       },
-      { speaker: "you", text: "お願いします。" },
+      {
+        title: "完了条件を書いて、AI に実行させる（Do）",
+        body: "完了条件が、そのまま AI への指示になります。作業はタスクごとの作業領域（git worktree）で行うので、失敗しても手元の LP は汚れません。実装した AI とは別の AI が検証の結果から報告をまとめます。成功すると、landing-page には FAQ の変更が、プロジェクトのリポジトリには計画・報告・状態の記録が、それぞれ commit されて統合されます。",
+        dialog: [
+          {
+            speaker: "you",
+            text: "FAQ の完了条件は、料金・導入期間・サポートなど問い合わせの多い 5 つの質問に答えていること、ページ上部のメニューから FAQ へ移動できること、npm run build が通ること。書けたら AI に実行させて。",
+          },
+          {
+            speaker: "orchestrator",
+            text: "個票に完了条件を書き、次を実行します。よろしいですか。",
+            code: execCode,
+          },
+          { speaker: "you", text: "お願いします。" },
+          {
+            speaker: "orchestrator",
+            text: "成功しました。landing-page とプロジェクトのリポジトリの両方に、exec(register PJR-XXXX) の commit が入っています。項目は確認待ち（review）です。",
+          },
+        ],
+      },
+      {
+        title: "確かめる（Check）",
+        body: "AI がまとめた報告で完了条件ごとの検証結果を読み、landing-page を手元で動かして FAQ の表示を確かめます。",
+        dialog: [
+          { speaker: "you", text: "報告を見せて。" },
+          {
+            speaker: "orchestrator",
+            text: "完了条件ごとの結果です。5 つの質問への回答、メニューからの移動、npm run build のいずれも満たしています。表示は npm --prefix ../landing-page run dev で確かめられます。",
+          },
+        ],
+      },
+      {
+        title: "完了として残し、次の改善を記す（Action）",
+        body: "確かめて気づいた改善点を次の項目として起票し、FAQ の項目は完了にします。どちらもプロジェクトのリポジトリに commit されます。起票から実行、確認、完了までの経過は、決めた理由と一緒に同じ台帳に残り、次の周回は手順 2 から回せます。始める手順で記録した OGP 画像の issue も、同じ流れで取りかかれます。",
+        dialog: [
+          {
+            speaker: "you",
+            text: "FAQ は条件どおり。ただ、スマートフォンだと回答が長くて読みにくい。改善を todo として起票して、FAQ のほうは完了にして。",
+          },
+          {
+            speaker: "orchestrator",
+            text: "次を実行します。よろしいですか。",
+            code: improveCode,
+          },
+          { speaker: "you", text: "お願いします。" },
+        ],
+      },
     ],
   },
 ];
 
-const commandSteps: CommandStep[] = [
-  installStep,
+const commandGroups: StepGroup<CommandStep>[] = [
   {
-    title: "オーケストレーターを配置する",
-    body: "コマンドで進める場合は不要です（会話で進める場合だけの手順です）。",
-  },
-  {
-    title: "オーケストレーターを起動する",
-    body: "コマンドで進める場合は不要です（会話で進める場合だけの手順です）。",
-  },
-  {
-    title: "最初の作業を起票する",
-    body: "登録簿の置き場所と一覧を作り、最初の作業を todo として起票します。表示された PJR-XXXX の個票（Markdown）を開き、背景や完了条件を書き足します。",
-    code: [
-      "npx specdojo register scaffold --project prj-0001",
-      'npx specdojo register add --project prj-0001 --type todo --title "最初のタスク"',
+    title: "5 つの手順で始める",
+    steps: [
+      installStep,
+      initStep,
+      {
+        title: "オーケストレーターを起動する",
+        body: "コマンドで進める場合は不要です（会話で進める場合だけの手順です）。",
+      },
+      {
+        title: "LP に加えたいことを起票する（Plan）",
+        body: "FAQ の節を加える作業を todo として起票します。表示された PJR-XXXX の個票（Markdown）を開き、背景を書き足します。",
+        code: addTodoCode,
+      },
+      {
+        title: "気づいたことも記して、一覧を作る",
+        body: "気づいた問題を issue として起票し、個票から一覧とログを作り直します。controls/project-register/generated/pjr-index.md を開くと、起票した項目が並んでいます。",
+        code: addIssueAndBuildCode,
+      },
     ],
   },
   {
-    title: "一覧を作る",
-    body: "個票から一覧とログを作り直します。controls/project-register/generated/pjr-index.md を開くと、起票した項目が並んでいます。",
-    code: ["npx specdojo register build --project prj-0001"],
+    title: "4 つの手順で回す",
+    steps: [
+      {
+        title: "LP のリポジトリをつなぐ",
+        body: "設定の repos に開発中の LP（landing-page）を宣言します。AI の作業は commit 済みの内容から作る作業領域で行うため、ここまでの設定と個票を commit します。",
+        code: [
+          ...reposConfigCode,
+          "",
+          "git add -A",
+          'git commit -m "chore: SpecDojo を導入する"',
+        ],
+      },
+      {
+        title: "完了条件を書いて、AI に実行させる（Do）",
+        body: "FAQ の todo の個票に、答える質問の数、メニューからの移動、npm run build が通ることを完了条件として書き、commit してから実行します。executor が landing-page で作業し、reporter が報告をまとめ、成功したものだけが統合されます。landing-page とプロジェクトのリポジトリの両方に、exec(register PJR-XXXX) の commit が入ります。",
+        code: [...execCode, "", ...execLogCode],
+      },
+      {
+        title: "確かめる（Check）",
+        body: "項目は確認待ち（review）になります。計画と報告は execution/exec/ 配下に残ります。報告で完了条件ごとの結果を読み、landing-page を動かして FAQ を確かめます。",
+        code: checkCode,
+      },
+      {
+        title: "完了として残し、次の改善を記す（Action）",
+        body: "気づいた改善点を todo として起票し、FAQ の項目は結論を書いて完了にします。--commit を付けると、プロジェクトのリポジトリにそれぞれ commit されます。",
+        code: improveCode,
+      },
+    ],
   },
 ];
 
@@ -148,10 +292,12 @@ const speakerLabels = {
 ---
 
 <section id="start" class="mt-20">
-  <h2 class="text-headline-medium text-on-surface">5 つの手順で始める</h2>
+  <h2 class="text-headline-medium text-on-surface">
+    5 つの手順で始めて、4 つの手順で回す
+  </h2>
   <p class="mt-4 text-body-large text-on-surface">
-    導入したら、あとはやりたいことを会話で伝えるだけです。最初の 1
-    件を起票して一覧を作るまでを、上から順に試します。
+    導入したら、あとはやりたいことを会話で伝えるだけです。開発中のランディングページ（LP）を例に、加えたいことを起票し、AI
+    に実行させ、確かめて次の改善を記すまでを、上から順に試します。
   </p>
   <p class="mt-2 text-body-medium text-on-surface-variant">
     オーケストレーターは、状態を変える操作を承認を得てから実行し、git push
@@ -180,13 +326,13 @@ const speakerLabels = {
     <figcaption class="text-title-medium text-on-surface">
       SpecDojo を別リポジトリで使うときの構成
     </figcaption>
-    <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{`app1-workspace/
-├── app1/                     # プロダクト
-├── app1-specdojo/            # SpecDojo の記録
-└── app1-specdojo-worktrees/  # exec の作業領域`}</code></pre>
+    <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{`landing-page-workspace/
+├── landing-page/                     # 開発中の LP（プロダクト）
+├── landing-page-specdojo/            # SpecDojo の記録
+└── landing-page-specdojo-worktrees/  # exec の作業領域`}</code></pre>
     <ul class="mt-4 list-disc space-y-2 pl-5 text-body-medium text-on-surface-variant">
       <li>
-        register だけなら、まずは <code>app1-specdojo/</code>{" "}
+        register だけなら、まずは <code>landing-page-specdojo/</code>{" "}
         だけで始められます。
       </li>
       <li>worktree は、exec でタスクごとの作業を隔離するときに作られます。</li>
@@ -202,73 +348,83 @@ const speakerLabels = {
 
   <Tabs>
     <Fragment slot="conversation">
-      <ol class="space-y-6">
-        {conversationSteps.map((step, index) => (
-          <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
-            <div class="flex items-baseline gap-3">
-              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
-                {index + 1}
-              </span>
-              <h4 class="text-title-medium text-on-surface">{step.title}</h4>
-            </div>
-            <p class="mt-3 text-body-medium text-on-surface-variant">
-              {step.body}
-            </p>
-            {step.code && <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>}
-            {step.providers && (
-              <table class="mt-4 w-full text-left text-body-medium text-on-surface-variant">
-                <thead>
-                  <tr class="border-b border-outline-variant">
-                    <th
-                      scope="col"
-                      class="py-2 pr-4 text-label-large text-on-surface"
-                    >
-                      provider
-                    </th>
-                    <th
-                      scope="col"
-                      class="py-2 text-label-large text-on-surface"
-                    >
-                      起動
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {providerScripts.map((row) => (
-                    <tr class="border-b border-outline-variant">
-                      <td class="py-2 pr-4">{row.provider}</td>
-                      <td class="py-2">
-                        <code>{row.script}</code>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-            {step.dialog && (
-              <ul class="mt-4 space-y-3">
-                {step.dialog.map((line) => (
-                  <li
-                    class={
-                      line.speaker === "you"
-                        ? "ml-auto max-w-[85%] rounded-large bg-primary-container p-4 text-on-primary-container"
-                        : "mr-auto max-w-[85%] rounded-large bg-surface-container-highest p-4 text-on-surface"
-                    }
-                  >
-                    <p class="text-label-medium">
-                      {speakerLabels[line.speaker]}
-                    </p>
-                    <p class="mt-1 text-body-medium">{line.text}</p>
-                    {line.code && <pre class="mt-3 overflow-x-auto rounded-small bg-inverse-surface p-3 text-body-small text-inverse-on-surface"><code>{line.code.join("\n")}</code></pre>}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ol>
+      {conversationGroups.map((group, groupIndex) => (
+        <div
+          id={groupIndex === 1 ? "run" : undefined}
+          class="mt-8 scroll-mt-6 first:mt-0"
+        >
+          <h4 class="text-title-large text-on-surface">{group.title}</h4>
+          <ol class="mt-4 space-y-6">
+            {group.steps.map((step, index) => (
+              <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+                <div class="flex items-baseline gap-3">
+                  <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
+                    {index + 1}
+                  </span>
+                  <h5 class="text-title-medium text-on-surface">
+                    {step.title}
+                  </h5>
+                </div>
+                <p class="mt-3 text-body-medium text-on-surface-variant">
+                  {step.body}
+                </p>
+                {step.code && <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>}
+                {step.providers && (
+                  <table class="mt-4 w-full text-left text-body-medium text-on-surface-variant">
+                    <thead>
+                      <tr class="border-b border-outline-variant">
+                        <th
+                          scope="col"
+                          class="py-2 pr-4 text-label-large text-on-surface"
+                        >
+                          provider
+                        </th>
+                        <th
+                          scope="col"
+                          class="py-2 text-label-large text-on-surface"
+                        >
+                          起動
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {providerScripts.map((row) => (
+                        <tr class="border-b border-outline-variant">
+                          <td class="py-2 pr-4">{row.provider}</td>
+                          <td class="py-2">
+                            <code>{row.script}</code>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+                {step.dialog && (
+                  <ul class="mt-4 space-y-3">
+                    {step.dialog.map((line) => (
+                      <li
+                        class={
+                          line.speaker === "you"
+                            ? "ml-auto max-w-[85%] rounded-large bg-primary-container p-4 text-on-primary-container"
+                            : "mr-auto max-w-[85%] rounded-large bg-surface-container-highest p-4 text-on-surface"
+                        }
+                      >
+                        <p class="text-label-medium">
+                          {speakerLabels[line.speaker]}
+                        </p>
+                        <p class="mt-1 text-body-medium">{line.text}</p>
+                        {line.code && <pre class="mt-3 overflow-x-auto rounded-small bg-inverse-surface p-3 text-body-small text-inverse-on-surface"><code>{line.code.join("\n")}</code></pre>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
       <p class="mt-6 text-body-medium text-on-surface-variant">
-        起票した項目の実行や成果物の生成も、同じ流れで進められます。詳しい進め方は
+        詳しい進め方は
         <a href={orchestratorGuideUrl} class="text-primary underline">
           オーケストレーター運用ガイド
         </a>
@@ -277,22 +433,29 @@ const speakerLabels = {
     </Fragment>
 
     <Fragment slot="command">
-      <ol class="space-y-6">
-        {commandSteps.map((step, index) => (
-          <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
-            <div class="flex items-baseline gap-3">
-              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
-                {index + 1}
-              </span>
-              <h4 class="text-title-medium text-on-surface">{step.title}</h4>
-            </div>
-            <p class="mt-3 text-body-medium text-on-surface-variant">
-              {step.body}
-            </p>
-            {step.code && <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>}
-          </li>
-        ))}
-      </ol>
+      {commandGroups.map((group) => (
+        <div class="mt-8 first:mt-0">
+          <h4 class="text-title-large text-on-surface">{group.title}</h4>
+          <ol class="mt-4 space-y-6">
+            {group.steps.map((step, index) => (
+              <li class="rounded-large bg-surface-container-low p-6 shadow-elevation-1">
+                <div class="flex items-baseline gap-3">
+                  <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-label-large text-on-primary">
+                    {index + 1}
+                  </span>
+                  <h5 class="text-title-medium text-on-surface">
+                    {step.title}
+                  </h5>
+                </div>
+                <p class="mt-3 text-body-medium text-on-surface-variant">
+                  {step.body}
+                </p>
+                {step.code && <pre class="mt-4 overflow-x-auto rounded-small bg-inverse-surface p-4 text-body-medium text-inverse-on-surface"><code>{step.code.join("\n")}</code></pre>}
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
       <p class="mt-6 text-body-medium text-on-surface-variant">
         オーケストレーターを使わずに、CLI
         を直接実行することもできます。各コマンドの詳しいオプションは
@@ -302,8 +465,5 @@ const speakerLabels = {
         を参照してください。
       </p>
     </Fragment>
-    <p class="mt-6 text-body-medium text-on-surface-variant">
-      作成された設定と個票を確認して commit すれば完了です。
-    </p>
   </Tabs>
 </section>
