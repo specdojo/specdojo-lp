@@ -86,16 +86,16 @@ Material 3 の指針を `src/styles/global.css` の `@theme` に定義してい�
 
 ## 6. ブランチと取り込みの運用
 
-GitHub flow で運用します。
+`develop` と `main` の 2 本で運用します。
 
-- `main` は、公開している状態とします。Cloudflare への配置は `main` から行います。
-- 変更は、まとまりごとのトピックのブランチ `feature/<topic>` で行います。例: `feature/lp-v1`。ブランチ名には SpecDojo の project ID を入れません。
-- 人の手直しも `main` へ直接 commit せず、トピックのブランチで行います。
-- `main` へは Pull Request で取り込みます。独立した承認者がいない間は、`git merge --no-ff` によるローカルの merge でもかまいません。
+- `main` は、公開している状態とします。Cloudflare への配置は `main` から行い、`main` への push が本番への配置になります。
+- `develop` は、次に公開する変更を集める統合先です。Workers Builds のプレビューとして配置されるため、`main` へ取り込む前に表示を確かめられます。
+- 変更は、`develop` から切ったトピックのブランチ `feature/<topic>` で行い、`develop` へ取り込みます。人の手直しも `develop` や `main` へ直接 commit しません。
+- `develop` から `main` への取り込み（リリース）は、人が行います。Pull Request で取り込みます。独立した承認者がいない間は、`git merge --no-ff` によるローカルの merge でもかまいません。
 
 ### 6.1. SpecDojo の exec との関係
 
-SpecDojo の exec は、`specdojo.config.json` の `repos[].integration_branch` に指定したブランチへ変更を統合します。作業中のトピックのブランチを指定し、`main` へは上の手順で取り込みます。
+SpecDojo の exec は、`specdojo.config.json` の `repos[].integration_branch` に指定したブランチへ変更を統合します。本リポジトリでは `develop` を指定し、人が確かめてから `main` へ取り込みます。exec は人が確かめる前に統合するため、`main` を統合先にしません。
 
 exec が作る commit と merge commit には、`Refs: <project-id>:<item-id>` が付きます。`main` へ取り込んだ後も `git log --grep "Refs: prj-0002:PJR-XXXX"` で項目から変更を辿れるよう、この行を残します。
 

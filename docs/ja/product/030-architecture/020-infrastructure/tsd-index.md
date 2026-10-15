@@ -25,7 +25,7 @@ SpecDojo のランディングページ（`specdojo-lp`）が採用する技術�
 | 型検査             | `astro check`（`@astrojs/check` 0.9.x）                                          | Astro のコンポーネントを含む型の検査                              | `npm run typecheck`                                                                                                               |
 | ホスティング       | Cloudflare Workers（静的アセット）                                               | ビルドした静的サイトの配信                                        | 独自ドメインは `specdojo.org`。配置の設定の詳細は [tsd-cloudflare-workers](tsd-cloudflare-workers.md)                             |
 | 配置               | `wrangler` 4.x                                                                   | Cloudflare Workers への配置と、手元での表示の確認                 | 設定は `wrangler.jsonc`。詳細は [tsd-cloudflare-workers](tsd-cloudflare-workers.md)                                               |
-| ソースコード管理   | GitHub                                                                           | リポジトリ管理と GitHub flow によるブランチ運用                   | `main` を公開している状態とし、変更は `feature/<topic>` で行う                                                                    |
+| ソースコード管理   | GitHub                                                                           | リポジトリ管理と、`develop` と `main` によるブランチ運用          | `main` を公開している状態とし、変更は `feature/<topic>` から `develop` へ取り込む。`develop` から `main` へは人が取り込む         |
 | アセット管理       | specdojo-assets                                                                  | マスコットなどの画像の原本の管理と、使うものだけの書き出し        | `exports.yaml` に載せたものだけを書き出し、本リポジトリで commit する                                                             |
 
 ## 2. 補足
