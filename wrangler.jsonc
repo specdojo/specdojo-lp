@@ -6,4 +6,6 @@
   "assets": {
     "directory": "./dist",
   },
+  // Workers Builds のプレビュー（npx wrangler preview）に必要。本番と同じ設定を使うため空にする。
+  "previews": {},
 }
