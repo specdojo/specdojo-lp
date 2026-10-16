@@ -90,7 +90,7 @@ Material 3 の指針を `src/styles/global.css` の `@theme` に定義してい�
 
 - `main` は、公開している状態とします。Cloudflare への配置は `main` から行い、`main` への push が本番への配置になります。
 - `develop` は、次に公開する変更を集める統合先です。Workers Builds のプレビューとして配置されるため、`main` へ取り込む前に表示を確かめられます。
-- 変更は、`develop` から切ったトピックのブランチ `feature/<topic>` で行い、`develop` へ取り込みます。人の手直しも `develop` や `main` へ直接 commit しません。
+- 変更は、`develop` から切ったトピックのブランチ `feature/<project-id>/<topic>`（例: `feature/prj-0002/lp-develop-flow`）で行い、`develop` へ取り込みます。`<project-id>` は、変更のもとになった SpecDojo の project ID です。人の手直しも `develop` や `main` へ直接 commit しません。
 - `develop` から `main` への取り込み（リリース）は、人が行います。Pull Request で取り込みます。独立した承認者がいない間は、`git merge --no-ff` によるローカルの merge でもかまいません。
 
 ### 6.1. SpecDojo の exec との関係
