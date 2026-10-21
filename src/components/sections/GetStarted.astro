@@ -14,7 +14,6 @@ type Prerequisite = {
 type DialogLine = {
   speaker: "you" | "orchestrator";
   text: string;
-  code?: string[];
 };
 
 type ConversationStep = {
@@ -128,8 +127,10 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
           },
           {
             speaker: "orchestrator",
-            text: "次を実行します。よろしいですか。",
-            code: addTodoCode,
+            text: `todo を 1 件起票します。
+・中身: 種類は todo、タイトルは「LP によくある質問（FAQ）の節を加える」です。
+・影響: プロジェクトの登録簿に個票とイベントを作成します。この時点では commit しません。
+よろしいですか？`,
           },
           { speaker: "you", text: "お願いします。" },
         ],
@@ -144,8 +145,10 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
           },
           {
             speaker: "orchestrator",
-            text: "次を実行します。よろしいですか。",
-            code: addIssueAndBuildCode,
+            text: `issue を 1 件起票し、登録簿の一覧を作ります。
+・中身: 種類は issue、タイトルは「SNS で共有したときに表示される画像（OGP）がない」です。
+・影響: プロジェクトの登録簿に個票とイベントを作成し、一覧とログを更新します。この時点では commit しません。
+よろしいですか？`,
           },
           { speaker: "you", text: "お願いします。" },
         ],
@@ -165,7 +168,10 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
           },
           {
             speaker: "orchestrator",
-            text: "specdojo.config.json の repos に landing-page を追加します。よろしいですか。",
+            text: `LP のリポジトリをプロジェクトにつなぎます。
+・中身: specdojo.config.json の repos に、名前 landing-page、パス ../landing-page、統合先 main として追加します。
+・影響: プロジェクトの設定ファイルを更新し、ここまでの設定と個票をプロジェクトのリポジトリへ commit します。LP のリポジトリ自体は変更しません。
+よろしいですか？`,
           },
           { speaker: "you", text: "お願いします。" },
         ],
@@ -180,8 +186,10 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
           },
           {
             speaker: "orchestrator",
-            text: "個票に完了条件を書き、次を実行します。よろしいですか。",
-            code: execCode,
+            text: `FAQ の todo に完了条件を書き、AI に実行させます。
+・中身: 5 つの質問への回答、メニューから FAQ への移動、npm run build の成功を完了条件にし、PJR-XXXX を claude-executor と claude-reporter で実行します。
+・影響: プロジェクトの個票と実行記録、landing-page の成果物を更新して、それぞれの統合先へ commit します。成功すると項目は確認待ち（review）になります。
+よろしいですか？`,
           },
           { speaker: "you", text: "お願いします。" },
           {
@@ -211,8 +219,10 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
           },
           {
             speaker: "orchestrator",
-            text: "次を実行します。よろしいですか。",
-            code: improveCode,
+            text: `改善の todo を 1 件起票し、FAQ の項目を完了にします。
+・中身: 「FAQ の回答をスマートフォンで読みやすくする」を todo として起票し、FAQ の項目には「FAQ の節を加え、問い合わせの多い 5 つの質問に答えた」と結論を記録します。
+・影響: プロジェクトの登録簿の個票・イベント・一覧・ログを更新し、develop へ 2 件 commit します。LP のリポジトリは変更しません。
+よろしいですか？`,
           },
           { speaker: "you", text: "お願いします。" },
         ],
@@ -415,8 +425,9 @@ const speakerLabels = {
                         <p class="text-label-medium">
                           {speakerLabels[line.speaker]}
                         </p>
-                        <p class="mt-1 text-body-medium">{line.text}</p>
-                        {line.code && <pre class="mt-3 overflow-x-auto rounded-small bg-inverse-surface p-3 text-body-small text-inverse-on-surface"><code>{line.code.join("\n")}</code></pre>}
+                        <p class="mt-1 whitespace-pre-line text-body-medium">
+                          {line.text}
+                        </p>
                       </li>
                     ))}
                   </ul>
