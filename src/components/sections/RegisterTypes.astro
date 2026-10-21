@@ -5,6 +5,12 @@ type RegisterType = {
   body: string;
 };
 
+type PlanModeComparisonRow = {
+  aspect: string;
+  planMode: string;
+  register: string;
+};
+
 // register の 7 種類。最初の一歩として入りやすい todo を先頭にし、先頭の 3 種類を大きく見せる。
 // 各説明は pjr-rulebook の item_type 別終端基準と登録簿運用ガイドの種類の表に合わせる。
 const primaryRegisterTypes: RegisterType[] = [
@@ -45,6 +51,42 @@ const secondaryRegisterTypes: RegisterType[] = [
     type: "note",
     title: "記録として残す",
     body: "観測や分析を残します。終わらせず、新しい事実を書き足していきます。",
+  },
+];
+
+const planModeComparisonRows: PlanModeComparisonRow[] = [
+  {
+    aspect: "識別",
+    planMode: "ランダムな名前。会話の外や後からの参照は難しい",
+    register: "PJR-XXXX の恒久的な ID。コミットログや他の文書から追跡可能",
+  },
+  {
+    aspect: "種類",
+    planMode: "種別の区別なし（Markdown の自由記述）",
+    register:
+      "7 つの種別（todo・decision・issue・question・risk・change-request・note）で用途と終わり方を分ける",
+  },
+  {
+    aspect: "状態の遷移",
+    planMode: "状態管理なし（会話終了や時間経過とともに消去）",
+    register:
+      "明示的な状態遷移（open・in-progress・waiting・review・done・decided・rejected・deferred）と履歴の記録",
+  },
+  {
+    aspect: "実行の plan・result とのつながり",
+    planMode: "実行の plan・result や Git コミットとの体系的な紐付けなし",
+    register:
+      "specdojo exec の plan・result や統合コミットと紐付いて作業と検証がつながる",
+  },
+  {
+    aspect: "決定の記録",
+    planMode: "決定内容や合意の経緯が会話ログに埋もれやすい",
+    register: "decision により決めた人・決めた日・承認の方式を確実に記録する",
+  },
+  {
+    aspect: "残り方",
+    planMode: "既定では一定期間で消えうる",
+    register: "個票としてリポジトリの中に残り、Git の履歴とともに追える",
   },
 ];
 ---
@@ -91,5 +133,82 @@ const secondaryRegisterTypes: RegisterType[] = [
         で履歴を追えます。
       </li>
     </ul>
+  </div>
+
+  <div class="mt-12">
+    <h3 class="text-title-large text-on-surface">
+      plan モードと register の使い分け
+    </h3>
+    <p class="mt-3 text-body-large text-on-surface">
+      1
+      件を早く仕上げるだけでなく、プロジェクトの判断と作業を検証できる形で残し、複数の
+      agent に安全に実行させる台帳です。AI ツールの plan
+      モードは段取りの下書き、register
+      は判断と作業を残す台帳として補い合います。
+    </p>
+
+    <ul class="mt-6 space-y-4 md:hidden">
+      {planModeComparisonRows.map((row) => (
+        <li class="rounded-medium bg-surface-container-low p-5 shadow-elevation-1">
+          <dl class="space-y-3">
+            <div>
+              <dt class="text-label-large text-primary">観点</dt>
+              <dd class="mt-1 text-title-medium text-on-surface">
+                {row.aspect}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-label-large text-on-surface-variant">
+                plan モードの plan（下書き）
+              </dt>
+              <dd class="mt-1 text-body-medium text-on-surface">
+                {row.planMode}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-label-large text-primary">
+                SpecDojo の register（台帳）
+              </dt>
+              <dd class="mt-1 text-body-medium text-on-surface">
+                {row.register}
+              </dd>
+            </div>
+          </dl>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-6 hidden overflow-hidden rounded-large border border-outline-variant shadow-elevation-1 md:block">
+      <table class="w-full table-fixed text-left">
+        <thead class="bg-primary-container text-on-primary-container">
+          <tr>
+            <th scope="col" class="w-1/5 px-5 py-4 text-label-large">
+              観点
+            </th>
+            <th scope="col" class="w-2/5 px-5 py-4 text-label-large">
+              plan モードの plan（下書き）
+            </th>
+            <th scope="col" class="w-2/5 px-5 py-4 text-label-large">
+              SpecDojo の register（台帳）
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-surface">
+          {planModeComparisonRows.map((row) => (
+            <tr class="border-t border-outline-variant">
+              <td class="px-5 py-4 align-top text-title-small font-semibold text-on-surface">
+                {row.aspect}
+              </td>
+              <td class="px-5 py-4 align-top text-body-medium text-on-surface-variant">
+                {row.planMode}
+              </td>
+              <td class="px-5 py-4 align-top text-body-medium text-on-surface">
+                {row.register}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
