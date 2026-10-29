@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://json.schemastore.org/remarkrc.json
+
+plugins:
+  - remark-parse
+  - - remark-frontmatter
+    - type: yaml
+      marker: "-"
+  - remark-gfm
+  - remark-lint
+  - "@specdojo/docs-lint/remark/no-unescaped-angle-placeholder"
+  - - "@specdojo/docs-lint/remark/frontmatter-ajv2020"
+    - strict: true
+      schemaRules:
+        - glob: docs/ja/product/**/*.md
+          schema: docs/specdojo/schemas/v1/deliverable-frontmatter.schema.yaml
+          require_frontmatter: true
