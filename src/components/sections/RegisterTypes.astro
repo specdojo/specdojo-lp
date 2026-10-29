@@ -11,7 +11,7 @@ type PlanModeComparisonRow = {
   register: string;
 };
 
-// register の 7 種類。最初の一歩として入りやすい todo を先頭にし、先頭の 3 種類を大きく見せる。
+// register の 8 種類。最初の一歩として入りやすい todo を先頭にし、先頭の 3 種類を大きく見せる。
 // 各説明は pjr-rulebook の item_type 別終端基準と登録簿運用ガイドの種類の表に合わせる。
 const primaryRegisterTypes: RegisterType[] = [
   {
@@ -32,6 +32,11 @@ const primaryRegisterTypes: RegisterType[] = [
 ];
 
 const secondaryRegisterTypes: RegisterType[] = [
+  {
+    type: "epic",
+    title: "track ごとの仕事をまとめる",
+    body: "具体的な作業は子 todo に分け、epic 自体は実行しません。子項目と schedule を確かめ、人が完了を判断します。",
+  },
   {
     type: "question",
     title: "判断を保留し、後で決める",
@@ -64,7 +69,7 @@ const planModeComparisonRows: PlanModeComparisonRow[] = [
     aspect: "種類",
     planMode: "種別の区別なし（Markdown の自由記述）",
     register:
-      "7 つの種別（todo・decision・issue・question・risk・change-request・note）で用途と終わり方を分ける",
+      "8 つの種別（todo・decision・issue・epic・question・risk・change-request・note）で用途と終わり方を分ける",
   },
   {
     aspect: "状態の遷移",
@@ -95,7 +100,7 @@ const planModeComparisonRows: PlanModeComparisonRow[] = [
   <h2 class="text-headline-medium text-on-surface">register の考え方</h2>
   <p class="mt-4 text-body-large text-on-surface">
     register（登録簿）は、プロジェクトで起きたことを 1
-    件ずつ起票して記録を集める台帳です。種類は 7 つあります。まずは todo
+    件ずつ起票して記録を集める台帳です。種類は 8 つあります。まずは todo
     から始め、慣れたら decision と issue を使いましょう。
   </p>
   <div class="mt-6 rounded-large bg-secondary-container px-6 py-4">
@@ -127,7 +132,11 @@ const planModeComparisonRows: PlanModeComparisonRow[] = [
       <li>
         起票すると、1 件ごとに個票（Markdown）ができます。個票が記録の正本です。
       </li>
-      <li>一覧は個票から生成されます。一覧を手で直す必要はありません。</li>
+      <li>
+        一覧は個票から生成されます。順番のある todo は depends_on（CLI の
+        --depends-on）でつなぎ、先行項目が done / decided
+        になるまで後続の実行を止めます。
+      </li>
       <li>
         個票はただの Markdown なので、SpecDojo がなくても読め、Git
         で履歴を追えます。
