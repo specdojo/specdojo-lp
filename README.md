@@ -64,7 +64,7 @@ npm run preview
 | `src/components/Tabs.astro`                   | 始め方のタブと、切り替え用のインラインスクリプト       |
 | `src/components/sections/Hero.astro`          | Hero と、始め方への導線                                |
 | `src/components/sections/Problems.astro`      | 利用者が抱える課題                                     |
-| `src/components/sections/RegisterTypes.astro` | register の考え方と 7 種類の項目                       |
+| `src/components/sections/RegisterTypes.astro` | register の考え方と 8 種類の項目                       |
 | `src/components/sections/ToolFit.astro`       | 困りごとに応じたツールの使い分け                       |
 | `src/components/sections/GetStarted.astro`    | 会話またはコマンドで始める 5 つの手順                  |
 | `src/components/sections/NextSteps.astro`     | ドキュメントサイトで読む次の内容                       |

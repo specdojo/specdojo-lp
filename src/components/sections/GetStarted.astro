@@ -63,18 +63,28 @@ const installStep = {
 
 const initStep = {
   title: "初期設定する",
-  body: "質問に答えると、設定（プロジェクト ID は prj-0001）、登録簿、人と AI の名簿、AI に実行させるための設定、オーケストレーターを起動する npm script がまとめて作られます。使う AI ツール（provider）と、AI に実行させるか（exec）を尋ねられたら、Claude Code の場合は claude と「はい」を選びます。Dev Container を作るか尋ねられたら y（はい）、続く推奨 preset の質問は Enter（既定の「はい」）を選びます。推奨 preset には、tmux・Emacs・Vim・推奨の VS Code 拡張と設定が含まれます。",
-  code: ["npx specdojo init"],
+  body: "質問に答えると、設定（プロジェクト ID は prj-0001）、登録簿、人と AI の名簿、AI の実行設定、オーケストレーターの起動 script が作られます。Claude Code に実行させる場合は、provider に claude、exec に「はい」を選びます。Dev Container を作る場合は y、preset は Enter（既定の recommended）で、tmux・Emacs・Vim・推奨の VS Code 拡張と設定が入ります。Git hook の質問は Enter（既定の「いいえ」）で進めます。markdownlint 設定がなければ .markdownlint.yaml も生成され、既存設定は保持されます。登録簿と AI の実行だけなら docs-lint・docs-site は不要です。文書検査や文書サイトが必要な場合だけ、下の任意コマンドで追加します。検査設定の詳細はドキュメント編集ガイドを参照してください。",
+  code: [
+    "npx specdojo init",
+    "",
+    "# 任意: SpecDojo 文書向けの検査を追加する場合",
+    "npm install --save-dev @specdojo/docs-lint",
+    "npx specdojo-docs-lint yaml-schema --modeline",
+    "",
+    "# 任意: 文書サイトを作る場合",
+    "npm install --save-dev @specdojo/docs-site",
+    "npx specdojo-docs-site build .",
+  ],
 };
 
 const addTodoCode = [
   "npx specdojo register add --project prj-0001 --type todo \\",
-  '  --title "LP によくある質問（FAQ）の節を加える"',
+  '  --title "LP によくある質問（FAQ）の節を加える" --topic faq-section',
 ];
 
 const addIssueAndBuildCode = [
   "npx specdojo register add --project prj-0001 --type issue \\",
-  '  --title "SNS で共有したときに表示される画像（OGP）がない"',
+  '  --title "SNS で共有したときに表示される画像（OGP）がない" --topic missing-ogp',
   "npx specdojo register build --project prj-0001",
 ];
 
@@ -99,7 +109,8 @@ const checkCode = ["npm --prefix ../landing-page run dev"];
 
 const improveCode = [
   "npx specdojo register add --project prj-0001 --type todo \\",
-  '  --title "FAQ の回答をスマートフォンで読みやすくする" --commit',
+  '  --title "FAQ の回答をスマートフォンで読みやすくする" --topic mobile-faq \\',
+  "  --depends-on PJR-XXXX --commit",
   "npx specdojo register close --project prj-0001 --id PJR-XXXX \\",
   '  --conclusion "FAQ の節を加え、問い合わせの多い 5 つの質問に答えた" --commit',
 ];
@@ -220,7 +231,7 @@ const conversationGroups: StepGroup<ConversationStep>[] = [
           {
             speaker: "orchestrator",
             text: `改善の todo を 1 件起票し、FAQ の項目を完了にします。
-・中身: 「FAQ の回答をスマートフォンで読みやすくする」を todo として起票し、FAQ の項目には「FAQ の節を加え、問い合わせの多い 5 つの質問に答えた」と結論を記録します。
+・中身: 「FAQ の回答をスマートフォンで読みやすくする」を todo として起票し、depends_on で元の FAQ の項目を先行に指定します。FAQ の項目には「FAQ の節を加え、問い合わせの多い 5 つの質問に答えた」と結論を記録します。
 ・影響: プロジェクトの登録簿の個票・イベント・一覧・ログを更新し、develop へ 2 件 commit します。LP のリポジトリは変更しません。
 よろしいですか？`,
           },
@@ -278,7 +289,7 @@ const commandGroups: StepGroup<CommandStep>[] = [
       },
       {
         title: "完了として残し、次の改善を記す（Action）",
-        body: "気づいた改善点を todo として起票し、FAQ の項目は結論を書いて完了にします。--commit を付けると、プロジェクトのリポジトリにそれぞれ commit されます。",
+        body: "気づいた改善点を todo として起票し、--depends-on で元の FAQ の項目を先行に指定します。FAQ の項目は結論を書いて完了にし、done になってから改善 todo を実行できます。--commit を付けると、プロジェクトのリポジトリにそれぞれ commit されます。PJR-XXXX は元の FAQ の項目の ID に置き換えます。",
         code: improveCode,
       },
     ],
@@ -293,7 +304,7 @@ const providerScripts = [
   { provider: "opencode", script: "npm run orch:opencode" },
   {
     provider: "codex",
-    script: "npm run orch:sol（orch:terra も追加されます）",
+    script: "npm run orch:sol（orch:luna も追加されます）",
   },
   { provider: "antigravity", script: "npm run orch:flash" },
 ];
