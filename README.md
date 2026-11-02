@@ -101,3 +101,11 @@ exec が作る commit と merge commit には、`Refs: <project-id>:<item-id>` �
 
 - merge commit と rebase merge では、`Refs:` はそのまま残ります。
 - squash merge では、squash の commit メッセージに `Refs:` の行を残します。GitHub の設定で、squash の既定のメッセージを「Pull request title and commit details」にします。
+
+## 7. 変更履歴の更新
+
+LP の変更要点は [変更履歴](CHANGELOG.md) に日本語で記録します。当面は LP 独自の公開日で管理し、SpecDojo 本体の変更履歴とは分けます。SpecDojo 本体や `package.json` の版とは同期させません。過去の全履歴は復元せず、確認できる直近の変更から記録します。
+
+1. `develop` へ変更を統合する際に、変更要点を `Unreleased` へ追記します。commit を羅列せず、利用者や開発者にとっての変更を「追加」「変更」「修正」「開発環境・運用」などの必要な分類にまとめ、空の分類は作りません。
+2. 記載対象は `git log main..develop` と `git diff main..develop` の両方で確認します。すでに `main` に含まれる変更を未公開として追記しません。`develop` への push によるプレビューへの反映は、本番公開として記録しません。
+3. 人が `develop` から `main` へ取り込み、本番公開する際に、実際の公開完了と公開日を確認し、公開した項目を `YYYY-MM-DD` の節へ移します。commit 日やプレビューの反映日から公開日を推測しません。新しい公開日の節を上に置き、その上に次の `Unreleased` を残します。今回公開しない項目があれば `Unreleased` に残します。
