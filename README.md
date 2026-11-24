@@ -4,6 +4,8 @@ SpecDojo のランディングページです。Astro の静的出力と Tailwin
 
 採用している技術の一覧は、技術スタック定義 [`docs/ja/product/030-architecture/020-infrastructure/tsd-index.md`](docs/ja/product/030-architecture/020-infrastructure/tsd-index.md) にまとめています。
 
+このリポジトリは、SpecDojo で開発する実例（showcase）として公開しています。変更は SpecDojo の登録簿と exec で運用しています。commit の `Refs: prj-0002:PJR-XXXX` から、公開中の `specdojo/specdojo` の `project/prj-0002/develop` ブランチにある登録簿の項目へ辿れます。外からの Pull Request は受け付けていません。
+
 ## 1. 必要な環境
 
 - Node.js 22.13.0 以上（ビルドだけなら 22.12.0 以上で動きます。ESLint が 22.13.0 以上を求めるため、整形・lint・型検査も行う開発には 22.13.0 以上を使います）
@@ -84,7 +86,14 @@ Material 3 の指針を `src/styles/global.css` の `@theme` に定義してい�
 
 色はベースライン配色（ライト）の仮の値です。ブランドの基調色が決まったら、Material Color Utilities で生成した値に差し替えます。
 
-## 6. ブランチと取り込みの運用
+## 6. ライセンス
+
+このリポジトリは MIT ライセンスです。全文は `LICENSE` にあります。
+
+- `src/assets/mascot/dojo-otter.webp` は MIT の対象外とし、転用・改変を許可しません。
+- このマスコット画像は暫定のもので、正式な画像に替える予定です。
+
+## 7. ブランチと取り込みの運用
 
 `develop` と `main` の 2 本で運用します。
 
@@ -93,7 +102,7 @@ Material 3 の指針を `src/styles/global.css` の `@theme` に定義してい�
 - 変更は、`develop` から切ったトピックのブランチ `feature/<project-id>/<topic>`（例: `feature/prj-0002/lp-develop-flow`）で行い、`develop` へ取り込みます。`<project-id>` は、変更のもとになった SpecDojo の project ID です。人の手直しも `develop` や `main` へ直接 commit しません。
 - `develop` から `main` への取り込み（リリース）は、人が行います。Pull Request で取り込みます。独立した承認者がいない間は、`git merge --no-ff` によるローカルの merge でもかまいません。
 
-### 6.1. SpecDojo の exec との関係
+### 7.1. SpecDojo の exec との関係
 
 SpecDojo の exec は、`specdojo.config.json` の `repos[].integration_branch` に指定したブランチへ変更を統合します。本リポジトリでは `develop` を指定し、人が確かめてから `main` へ取り込みます。exec は人が確かめる前に統合するため、`main` を統合先にしません。
 
@@ -102,7 +111,7 @@ exec が作る commit と merge commit には、`Refs: <project-id>:<item-id>` �
 - merge commit と rebase merge では、`Refs:` はそのまま残ります。
 - squash merge では、squash の commit メッセージに `Refs:` の行を残します。GitHub の設定で、squash の既定のメッセージを「Pull request title and commit details」にします。
 
-## 7. 変更履歴の更新
+## 8. 変更履歴の更新
 
 LP の変更要点は [変更履歴](CHANGELOG.md) に日本語で記録します。当面は LP 独自の公開日で管理し、SpecDojo 本体の変更履歴とは分けます。SpecDojo 本体や `package.json` の版とは同期させません。過去の全履歴は復元せず、確認できる直近の変更から記録します。
 
