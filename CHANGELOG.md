@@ -4,6 +4,8 @@ specdojo-lp 独自の変更要点を、確認できる直近の変更から記�
 
 ## Unreleased
 
+## 2026-11-25
+
 ### 追加
 
 - MIT の `LICENSE` を追加し、README に showcase としての案内とライセンスの節を加えました。マスコット画像 `src/assets/mascot/dojo-otter.webp` は MIT の対象外で、転用・改変を許可しないことを明記しました。
